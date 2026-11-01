@@ -1,0 +1,39 @@
+{
+  "prepared_with": "Blender 5.0",
+  "sources": {
+    "heart-source.glb": "https://raw.githubusercontent.com/organui/heart-3d/main/public/models/heart.glb",
+    "skeleton-source.glb": "https://raw.githubusercontent.com/yamz8/human-body-simulator/main/public/models/overview-skeleton.glb"
+  },
+  "files": [
+    {
+      "file": "heart-poster.png",
+      "bytes": 960971,
+      "sha256": "fe4dec5c498ee7414a279ddc45514a46c581397fc58f82f2bff4fd96afb0150c"
+    },
+    {
+      "file": "heart-source.glb",
+      "bytes": 2524400,
+      "sha256": "b80a727d022a4ab07ccfcf15caccc228eaccb6d69ec0e72923324946ac35a946"
+    },
+    {
+      "file": "heart.glb",
+      "bytes": 1944692,
+      "sha256": "00f6138b2bff1d020065c2b6c89da0542fe9c7973f56406965a60544da2eb013"
+    },
+    {
+      "file": "skeleton-poster.png",
+      "bytes": 550137,
+      "sha256": "dc8c5aca7ae653dbb8bb668832bf1cf328858bd9c5bcf4f2b2fe5142ca67f38d"
+    },
+    {
+      "file": "skeleton-source.glb",
+      "bytes": 2406636,
+      "sha256": "253c47077e4ae11421c8ff3eae68c9414335ee2f0ad911eddf8ea0ea7dc0a6ce"
+    },
+    {
+      "file": "skeleton.glb",
+      "bytes": 5574600,
+      "sha256": "2a72c753889ac4e8e6ed0ec22b5953d1ef0aa4560ae97005ec1b092fdceb8946"
+    }
+  ]
+}

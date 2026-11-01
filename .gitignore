@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+*.blend1
+backups/
+artifacts/
+智触人体图片库/
+.codex/
+.agents/
+.aws/
+.publish-state.json
+scripts/publish_github.py
+assets/anatomy.svg

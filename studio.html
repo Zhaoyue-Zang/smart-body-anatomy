@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a1013"><title>解剖形态实验室 | 智触人体</title>
+  <link rel="stylesheet" href="studio.css">
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
+  <script src="assets/vendor/gsap.min.js" defer></script>
+  <script src="studio.js" type="module"></script>
+  <script>document.addEventListener('DOMContentLoaded',()=>{if(location.protocol==='file:'){document.getElementById('loadState').classList.add('failed');document.getElementById('loadTitle').textContent='请通过本地网址打开';document.getElementById('loadDetail').textContent='双击同目录的「启动网站.bat」，即可打开支持三维交互的完整网站。';}});</script>
+</head>
+<body>
+  <header class="studio-header"><a class="studio-brand" href="index.html#home"><span class="brand-emblem">✳</span><span>智触人体<small>ANATOMY / STUDIO</small></span></a><nav aria-label="展厅导航"><a href="index.html#home">平台首页</a><span class="nav-current">形态实验室 <i>3D</i></span></nav><div class="header-end"><span class="status-dot"></span><span>独立探索空间</span><button class="icon-button" id="helpButton" aria-label="操作帮助">?</button></div></header>
+  <main class="studio-shell">
+    <aside class="collection-panel"><div class="section-kicker">THE COLLECTION <span>02</span></div><h1>形态实验室<span>看见生命的精密。</span></h1><p class="panel-intro">转动视角，走近细节。<br>在光影之间，探索人体结构。</p>
+      <div class="model-collection" role="group" aria-label="选择模型">
+        <button class="model-card active" data-model="heart" aria-pressed="true"><span class="card-number">01 / CARDIOVASCULAR</span><img src="assets/models/heart-poster.png" alt="心脏三维模型渲染" width="200" height="160"><span class="model-name">心脏 <span>↗</span></span><small>HUMAN HEART</small></button>
+        <button class="model-card" data-model="skeleton" aria-pressed="false"><span class="card-number">02 / SKELETAL</span><img src="assets/models/skeleton-poster.png" alt="骨骼三维模型渲染" width="200" height="160"><span class="model-name">全身骨骼 <span>↗</span></span><small>HUMAN SKELETON</small></button>
+      </div>
+      <div class="collection-note"><span>真实网格 · 自由观察</span><p>解剖参考模型，非临床诊断工具。<br>颜色与表面处理用于视觉展示。</p><button class="text-button" id="creditsButton">模型来源与授权 ↗</button></div>
+    </aside>
+    <section class="viewport-panel" aria-label="三维模型工作区">
+      <div class="viewport-heading"><div><span class="section-kicker">ANATOMICAL FORM / <span id="modelIndex">01</span></span><h2 id="modelTitle">心脏 <em>Cor</em></h2></div><span class="live-badge"><i></i> LIVE 3D</span></div>
+      <div class="canvas-stage" id="stage"><div class="stage-halo"></div><div class="stage-grid" id="stageGrid"></div><div class="stage-word" aria-hidden="true">COR</div><canvas id="anatomyCanvas" tabindex="0" aria-label="交互式解剖模型。拖动旋转、滚轮缩放；方向键旋转，R 重置，空格切换自动旋转。"></canvas>
+        <div class="load-state" id="loadState" role="status"><span class="loader-ring"></span><strong id="loadTitle">正在布置展台</strong><span id="loadDetail">载入本地三维模型…</span><button id="retryButton" class="control-button" hidden>重新载入</button></div>
+        <span class="view-label" id="viewLabel">自由视角</span><span class="axis-label">Y <b>↑</b><br><span>↙ Z　 X →</span></span>
+        <div class="selection-badge" id="selectionBadge" hidden><span id="selectionLabel"></span><button id="clearSelection" aria-label="取消结构选择">×</button></div>
+      </div>
+      <div class="viewport-bottom"><div class="view-presets" role="group" aria-label="标准视角"><button class="active" data-view="front">前面观</button><button data-view="side">侧面观</button><button data-view="back">后面观</button><button id="resetCamera" aria-label="重置全部视图">↺</button></div><div class="viewport-actions"><button id="spinButton" class="tool-button" aria-pressed="false" title="自动旋转 · 空格">⟳ <span>自动旋转</span></button><button id="snapshotButton" class="tool-button" title="下载当前视图">↓ <span>截图</span></button><button id="fullscreenButton" class="tool-button" aria-pressed="false" title="展开工作区">⛶ <span>沉浸</span></button></div></div>
+      <div class="gesture-hint"><span>拖动旋转</span><i>·</i><span>滚轮 / 双指缩放</span><i>·</i><span>点击结构选取</span><small id="meshStats">GLB / LOCAL ASSET</small></div>
+    </section>
+    <aside class="inspector-panel"><div class="section-kicker">DISPLAY CONTROLS <span>⌘</span></div><h3>让细节浮现</h3>
+      <div class="control-section"><label>表面呈现 <span>MATERIAL</span></label><div class="segmented" role="group" aria-label="材质模式"><button data-material="original" class="active" aria-pressed="true">原色</button><button data-material="clay" aria-pressed="false">素模</button><button data-material="wire" aria-pressed="false">线框</button></div></div>
+      <div class="control-section"><label for="explodeRange">结构展开 <output id="explodeValue">0%</output></label><input id="explodeRange" type="range" min="0" max="100" value="0"><p class="control-note">沿各部件中心展开，观察空间层次。</p></div>
+      <div class="control-section"><label for="exposureRange">光照强度 <output id="exposureValue">100%</output></label><input id="exposureRange" type="range" min="40" max="180" value="100"><div class="light-options"><button data-light="warm" class="active" aria-pressed="true"><i class="warm-swatch"></i>暖调</button><button data-light="cool" aria-pressed="false"><i class="cool-swatch"></i>冷调</button><button id="gridButton" aria-pressed="true">网格 ✓</button></div></div>
+      <div class="control-section structure-section"><label for="structureSelect">结构选择 <span>SELECT</span></label><select id="structureSelect"><option value="">完整模型</option></select><div class="selection-actions"><button id="isolateButton" class="control-button" disabled aria-pressed="false">单独显示</button><button id="focusButton" class="control-button" disabled>聚焦</button></div><p id="structureHint" class="control-note">选择结构后，可单独显示或聚焦观察。</p></div>
+      <div class="studio-footnote"><span class="mini-line"></span><strong>每一次转动，<br>都是新的发现。</strong><span>EXPLORE AT YOUR OWN PACE</span></div>
+    </aside>
+  </main>
+  <footer class="studio-footer"><span>智触人体 · 医脉相承</span><span>AN INDEPENDENT SPACE FOR CURIOSITY</span><a href="index.html#atlas">返回模型收藏 ↗</a></footer>
+  <div id="studioToast" role="status"></div>
+  <dialog id="helpDialog"><form method="dialog"><button class="dialog-close" aria-label="关闭帮助">×</button></form><span class="section-kicker">A MOMENT TO EXPLORE</span><h2>指尖之间，自由观察。</h2><dl><dt>旋转 / 缩放</dt><dd>鼠标拖动旋转，滚轮缩放；触屏单指转动，双指缩放。</dd><dt>选择 / 聚焦</dt><dd>点击模型表面，或使用右侧结构选择菜单，再点击「单独显示」或「聚焦」。</dd><dt>键盘操作</dt><dd>聚焦模型后，方向键旋转，＋ / － 缩放，R 重置，空格切换自动旋转。Esc 退出沉浸模式。</dd><dt>结构展开</dt><dd>这是各部件的空间分离展示，展开后的位置不是实际解剖位置。</dd></dl></dialog>
+  <dialog id="creditsDialog"><form method="dialog"><button class="dialog-close" aria-label="关闭来源说明">×</button></form><span class="section-kicker">CRAFT & PROVENANCE</span><h2>有出处的模型，<br>可延续的创作。</h2><p>心脏：BodyParts3D，© The Database Center for Life Science (DBCLS)，经 OrganUI 整理，<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>。</p><p>骨骼：Open3Dmodel / Open Anatomy 来源，由 human-body-simulator 提供的模型副本，<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>。本项目的骨骼衍生模型保持相同许可。</p><p>使用 Blender 5.0 整理、补全骨骼对侧、调整材质、布光并渲染封面。模型为开放解剖参考资产的改编，不是本团队标本扫描。心脏包含腔室表面等参考结构，未包含瓣膜和完整静脉系统。</p><p><a href="assets/models/ATTRIBUTION.md" target="_blank">完整来源、变更与授权记录 ↗</a></p></dialog>
+  <noscript>三维交互需要启用 JavaScript。<a href="assets/models/heart-poster.png">查看心脏渲染图</a></noscript>
+</body>
+</html>
