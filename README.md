@@ -70,3 +70,9 @@ scripts/upgrade_site.py 是已执行的一次性迁移记录，请勿重复运�
 修改网站后运行 `python scripts/build_pages.py`，再提交并推送源码和 docs。网站的前端、模型和图片均使用相对路径，适配 GitHub Pages 的仓库子路径。
 
 GitHub Pages 不运行 Python 后端；在线模型馆、知识学习、练习和浏览器本地学习记录可用，AI 助教使用现有离线知识问答。开放式 AI 与视觉模型仍需另行部署服务端。
+
+## 2026-11-01 模型扩充
+
+展厅现有 7 组模型：心脏、全身骨骼、双肾、脑、脾脏、右肱二头肌、膝部骨性结构。新增 5 组由 Blender 从 BodyParts3D 的具名网格加工；保留可编辑 .blend 场景与来源记录。脑可按左右皮质、小脑、脑干等分组选择；膝部模型仅显示骨骼。
+
+重新加工：先运行 `python scripts/download_expansion.py`，然后运行 Blender 后台脚本 `scripts/prepare_expansion.py`。发布目录使用 `python scripts/build_pages.py` 更新。新增资源许可为 CC BY-SA 2.1 Japan，详见 assets/models/ATTRIBUTION.md。

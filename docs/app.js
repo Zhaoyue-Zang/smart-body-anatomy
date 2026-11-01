@@ -113,7 +113,12 @@ function closeModal(id){$('#'+id).classList.remove('open');if(!$$('.modal-backdr
 function download(name,content,mime='text/plain;charset=utf-8'){let url=URL.createObjectURL(new Blob([content],{type:mime}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 const galleryModels=[
  {id:'heart',serial:'01',title:'心脏',en:'HUMAN HEART',system:'循环系统',intro:'沿着冠状血管与心腔表面，观察心脏的立体形态。'},
- {id:'skeleton',serial:'02',title:'全身骨骼',en:'HUMAN SKELETON',system:'运动系统',intro:'从颅骨、脊柱到四肢，探索骨骼之间的空间关系。'}
+ {id:'skeleton',serial:'02',title:'全身骨骼',en:'HUMAN SKELETON',system:'运动系统',intro:'从颅骨、脊柱到四肢，探索骨骼之间的空间关系。'},
+ {id:'kidneys',serial:'03',title:'双肾',en:'PAIRED KIDNEYS',system:'泌尿系统',intro:'保留左右肾的空间关系，转动观察肾脏外形。'},
+ {id:'brain',serial:'04',title:'脑',en:'HUMAN BRAIN',system:'神经系统',intro:'分组观察大脑皮质、小脑与脑干，探索脑表面的沟回。'},
+ {id:'spleen',serial:'05',title:'脾脏',en:'HUMAN SPLEEN',system:'淋巴系统',intro:'在冷暖光影中观察脾脏的外形与表面轮廓。'},
+ {id:'muscles',serial:'06',title:'肱二头肌',en:'BICEPS BRACHII',system:'运动系统',intro:'分别选取右肱二头肌长头与短头，观察两束肌肉的关系。'},
+ {id:'knee',serial:'07',title:'膝部骨性结构',en:'KNEE BONES',system:'运动系统',intro:'聚焦股骨下端、胫腓骨上端与髌骨；此模型不含韧带及半月板。'}
 ];
 function specCard(s){return `<a class="card card-hover collection-card" href="studio.html?model=${s.id}"><div class="collection-art"><span class="spec-index">COLLECTION / ${s.serial}</span><img src="assets/models/${s.id}-poster.png" alt="${s.title}三维模型渲染" loading="lazy" width="1000" height="1100"><span class="collection-arrow">↗</span></div><div class="spec-text"><span class="eyebrow">${s.en}</span><h3>${s.title}</h3><p>${s.intro}</p><div class="spec-meta"><span>3D · 自由观察</span><span>进入独立展厅 ↗</span></div></div></a>`}
 function renderAtlas(){const term=$('#atlasSearch').value.trim().toLowerCase(),filter=$('#atlasFilters .chip.active')?.dataset.filter||'all';const list=galleryModels.filter(s=>(filter==='all'||s.system===filter)&&(s.title+s.en+s.system+s.intro).toLowerCase().includes(term));$('#atlasGrid').innerHTML=list.map(specCard).join('')||'<div class="card" style="padding:40px;grid-column:1/-1">没有匹配的模型，请尝试「心脏」或「骨骼」。</div>';$('#atlasCount').textContent=`${list.length} / ${galleryModels.length} 件模型`}

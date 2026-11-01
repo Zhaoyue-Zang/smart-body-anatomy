@@ -28,7 +28,7 @@ Licensed under [Creative Commons Attribution-ShareAlike 4.0 International](https
 
 ## 共同说明
 
-- 两个模型均为开放解剖参考资产的适配，不是本项目原创雕刻或本团队标本扫描。渲染、颜色、光照与展开位置用于展示，需与正式解剖学教材结合使用。
+- 所有模型均为开放解剖参考资产的适配，不是本项目原创雕刻或本团队标本扫描。渲染、颜色、光照与展开位置用于展示，需与正式解剖学教材结合使用。
 - 作者、整理者和数据机构不为本站背书。
 - `manifest.json` 保存下载来源、字节数和 SHA-256；`scripts/prepare_models.py` 保存可复现的 Blender 加工过程。
 - Blender 源文件位于项目根目录的 `blender/` 文件夹。
@@ -39,3 +39,14 @@ Licensed under [Creative Commons Attribution-ShareAlike 4.0 International](https
 - Three.js 0.170.0：[MIT License](../vendor/three/LICENSE)。包含 GLTFLoader、OrbitControls 和 BufferGeometryUtils。
 - GSAP 3.12.5：© GreenSock，源文件保留许可头；适用 [GSAP Standard License](https://gsap.com/standard-license/)。
 - 全部运行时脚本和模型本地提供，无 CDN 运行依赖。
+
+## 新增五组模型 / BodyParts3D expansion
+
+BodyParts3D, © The Database Center for Life Science (DBCLS), licensed under [Creative Commons Attribution-ShareAlike 2.1 Japan](https://creativecommons.org/licenses/by-sa/2.1/jp/).
+
+- 来源：[Kevin-Mattheus-Moerman / BodyParts3D](https://github.com/Kevin-Mattheus-Moerman/BodyParts3D)，[上游内容许可](https://github.com/Kevin-Mattheus-Moerman/BodyParts3D/blob/main/LICENSE_content)。
+- 原始 STL 的 FMA / BP 标识与名称记录于 expansion-sources.json；下载文件大小和 SHA-256 记录于 expansion-downloads.json。下载器 scripts/download_expansion.py 保留确切 URL。
+- 改编：Blender 5.0 导入、保留源空间配准、网格减面（每部件最多约 12,000 面）、平滑法线、材质赋色、整体居中缩放、三点布光和封面渲染。膝部截取股骨远端与胫腓骨近端。
+- 衍生文件：kidneys、brain、spleen、muscles、knee 的 .glb、-poster.png 与 blender/*-studio.blend，均继续按 CC BY-SA 2.1 Japan 分发。模型截图同样保留署名与许可。
+- 双肾：左右肾外表面，不包含内部肾盂、肾锥体或肾血管。脑：37 个皮质、小脑、脑干部件，非完整深部解剖模型。肌肉：右肱二头肌长、短头。膝部：四件骨性结构，不包含关节软骨、韧带或半月板。脾脏：外表面。
+- scripts/prepare_expansion.py 可复现加工，原始 STL 可用下载器重新取得；网页资产无需联网依赖外部模型服务器。

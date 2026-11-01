@@ -8,7 +8,12 @@ const $$ = s => [...document.querySelectorAll(s)];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const models = {
   heart: { title:'心脏', latin:'Cor', index:'01', word:'COR', file:'assets/models/heart.glb' },
-  skeleton: { title:'全身骨骼', latin:'Systema skeletale', index:'02', word:'OSSA', file:'assets/models/skeleton.glb' }
+  skeleton: { title:'全身骨骼', latin:'Systema skeletale', index:'02', word:'OSSA', file:'assets/models/skeleton.glb' },
+  kidneys: { title:'双肾', latin:'Renes', index:'03', word:'REN', file:'assets/models/kidneys.glb' },
+  brain: { title:'脑', latin:'Encephalon', index:'04', word:'MENS', file:'assets/models/brain.glb' },
+  spleen: { title:'脾脏', latin:'Lien', index:'05', word:'LIEN', file:'assets/models/spleen.glb' },
+  muscles: { title:'肱二头肌', latin:'Biceps brachii', index:'06', word:'MUSCLE', file:'assets/models/muscles.glb' },
+  knee: { title:'膝部骨性结构', latin:'Ossa genus', index:'07', word:'GENU', file:'assets/models/knee.glb' }
 };
 const heartNames={'right-atrium':'右心房壁','left-atrium':'左心房壁','ventricular-wall':'心室壁','right-ventricle':'右心室腔表面','left-ventricle':'左心室腔表面','ascending-aorta':'升主动脉','aortic-arch':'主动脉弓','pulmonary-trunk':'肺动脉干','superior-vena-cava':'上腔静脉','left-coronary':'左冠状动脉树','right-coronary':'右冠状动脉树'};
 let renderer, scene, camera, controls, root, meshes=[], selections=[], selected=null, isolated=false;
@@ -60,7 +65,7 @@ async function loadModel(id){
 }
 function groupOf(name){const n=name.toLowerCase();if(/rib|sternum/.test(n))return '胸廓';if(/vertebra|atlas|axis|sacrum|coccyx/.test(n))return '脊柱';if(/femur|tibia|fibula|patella|foot|metatars|tarsal|calcaneus|talus|cuneiform|cuboid|navicular/.test(n))return '下肢骨';if(/hip/.test(n))return '骨盆';if(/humerus|radius|ulna|scapula|clavicle|carpal|finger|capitate|hamate|lunate|pisiform|scaphoid|trapez|triquetr/.test(n))return '上肢骨';return '颅骨与牙齿'}
 function buildSelections(){
- selections=current==='heart'?meshes.map(o=>({name:heartNames[o.name]||o.name,items:[o]})):['颅骨与牙齿','脊柱','胸廓','骨盆','上肢骨','下肢骨'].map(name=>({name,items:meshes.filter(o=>groupOf(o.name)===name)})).filter(g=>g.items.length);
+ selections=current==='heart'?meshes.map(o=>({name:heartNames[o.name]||o.name,items:[o]})):current==='skeleton'?['颅骨与牙齿','脊柱','胸廓','骨盆','上肢骨','下肢骨'].map(name=>({name,items:meshes.filter(o=>groupOf(o.name)===name)})).filter(g=>g.items.length):[...new Set(meshes.map(o=>o.userData.groupLabel||o.name))].map(name=>({name,items:meshes.filter(o=>(o.userData.groupLabel||o.name)===name)}));
  selections.forEach((g,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=g.name;$('#structureSelect').append(option)});
 }
 function paint(){meshes.forEach(o=>{const m=o.material;const chosen=selected?.items.includes(o);m.wireframe=materialMode==='wire';m.color.copy(materialMode==='original'?o.userData.baseColor:new THREE.Color(materialMode==='clay'?0xc6bfae:0x83b5bd));m.emissive.set(chosen?0x82602d:0x000000);m.emissiveIntensity=chosen?.25:0;m.transparent=Boolean(selected&&!chosen&&!isolated);m.opacity=m.transparent?.18:1;m.depthWrite=!m.transparent;o.visible=!isolated||Boolean(chosen);m.needsUpdate=true});invalidate()}
@@ -82,7 +87,7 @@ $('#isolateButton').onclick=()=>{if(!selected)return;isolated=!isolated;$('#isol
 $('#focusButton').onclick=()=>{if(!selected)return;setSpin(false);const box=new THREE.Box3();selected.items.forEach(o=>box.expandByObject(o));const center=box.getCenter(new THREE.Vector3());const size=box.getSize(new THREE.Vector3()).length();const direction=camera.position.clone().sub(controls.target).normalize();moveCamera(center.clone().addScaledVector(direction,Math.max(1.6,size*1.8)),center);$('#viewLabel').textContent='聚焦 / '+selected.name};
 $('#spinButton').onclick=()=>setSpin(!spin);$('#resetCamera').onclick=reset;
 $('#fullscreenButton').onclick=()=>{const active=document.body.classList.toggle('immersive');$('#fullscreenButton').setAttribute('aria-pressed',String(active));resize()};
-$('#snapshotButton').onclick=()=>{if(!root||busy){toast('请等待模型载入后再截图');return}renderer.render(scene,camera);const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;const ctx=out.getContext('2d');ctx.fillStyle='#10171a';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(canvas,0,0);ctx.font=`${Math.max(12,Math.round(out.width/70))}px sans-serif`;ctx.fillStyle='#c4b18e';ctx.fillText(current==='heart'?'BodyParts3D / DBCLS · CC BY 4.0':'Open3Dmodel / Open Anatomy · CC BY-SA 4.0',20,out.height-20);out.toBlob(blob=>{if(!blob){toast('截图失败，请重试');return}const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`智触人体-${current}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('当前视图已导出 PNG')})};
+$('#snapshotButton').onclick=()=>{if(!root||busy){toast('请等待模型载入后再截图');return}renderer.render(scene,camera);const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;const ctx=out.getContext('2d');ctx.fillStyle='#10171a';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(canvas,0,0);ctx.font=`${Math.max(12,Math.round(out.width/70))}px sans-serif`;ctx.fillStyle='#c4b18e';ctx.fillText(current==='heart'?'BodyParts3D / DBCLS · CC BY 4.0':current==='skeleton'?'Open3Dmodel / Open Anatomy · CC BY-SA 4.0':'BodyParts3D / DBCLS · CC BY-SA 2.1 JP',20,out.height-20);out.toBlob(blob=>{if(!blob){toast('截图失败，请重试');return}const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`智触人体-${current}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('当前视图已导出 PNG')})};
 $('#helpButton').onclick=()=>$('#helpDialog').showModal();$('#creditsButton').onclick=()=>$('#creditsDialog').showModal();
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
 $('#retryButton').onclick=()=>{if(!renderer)location.reload();else loadModel(current)};

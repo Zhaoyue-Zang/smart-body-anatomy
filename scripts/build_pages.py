@@ -9,6 +9,8 @@ files=['index.html','app.js','experience.css','experience.js','studio.html','stu
 files += [str(p.relative_to(ROOT)) for p in (ROOT/'assets').glob('*.webp')]
 files += [str(p.relative_to(ROOT)) for p in (ROOT/'assets/vendor').rglob('*') if p.is_file()]
 files += [f'assets/models/{name}' for name in ['heart.glb','skeleton.glb','heart-poster.png','skeleton-poster.png','ATTRIBUTION.md','manifest.json','heart-provenance.md','heart-source-manifest.json','skeleton-source-readme.md']]
+files += [f'assets/models/{kind}{suffix}' for kind in ['kidneys','brain','spleen','muscles','knee'] for suffix in ['.glb','-poster.png']]
+files += ['assets/models/expansion-sources.json','assets/models/expansion-downloads.json']
 for name in files:
     source=ROOT/name;target=DEST/name
     target.parent.mkdir(parents=True,exist_ok=True)

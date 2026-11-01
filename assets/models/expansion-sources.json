@@ -1,0 +1,200 @@
+{
+  "source": "https://github.com/Kevin-Mattheus-Moerman/BodyParts3D",
+  "license": "CC BY-SA 2.1 JP",
+  "models": {
+    "kidneys": [
+      {
+        "id": "FMA7204",
+        "name": "right kidney"
+      },
+      {
+        "id": "FMA7205",
+        "name": "left kidney"
+      }
+    ],
+    "brain": [
+      {
+        "id": "BP49",
+        "name": "left superior parietal lobule precuneus"
+      },
+      {
+        "id": "BP50",
+        "name": "right superior parietal lobule precuneus"
+      },
+      {
+        "id": "FMA61993nsn",
+        "name": "midbrain, nsn"
+      },
+      {
+        "id": "FMA62004",
+        "name": "medulla oblongata"
+      },
+      {
+        "id": "FMA67943",
+        "name": "pons"
+      },
+      {
+        "id": "FMA67944",
+        "name": "cerebellum"
+      },
+      {
+        "id": "FMA72653",
+        "name": "right superior frontal gyrus"
+      },
+      {
+        "id": "FMA72654",
+        "name": "left superior frontal gyrus"
+      },
+      {
+        "id": "FMA72655",
+        "name": "right middle frontal gyrus"
+      },
+      {
+        "id": "FMA72656",
+        "name": "left middle frontal gyrus"
+      },
+      {
+        "id": "FMA72661",
+        "name": "right precentral gyrus"
+      },
+      {
+        "id": "FMA72662",
+        "name": "left precentral gyrus"
+      },
+      {
+        "id": "FMA72665",
+        "name": "right postcentral gyrus"
+      },
+      {
+        "id": "FMA72666",
+        "name": "left postcentral gyrus"
+      },
+      {
+        "id": "FMA72667",
+        "name": "right supramarginal gyrus"
+      },
+      {
+        "id": "FMA72668",
+        "name": "left supramarginal gyrus"
+      },
+      {
+        "id": "FMA72669",
+        "name": "right angular gyrus"
+      },
+      {
+        "id": "FMA72670",
+        "name": "left angular gyrus"
+      },
+      {
+        "id": "FMA72685",
+        "name": "right middle temporal gyrus"
+      },
+      {
+        "id": "FMA72686",
+        "name": "left middle temporal gyrus"
+      },
+      {
+        "id": "FMA72687",
+        "name": "right inferior temporal gyrus"
+      },
+      {
+        "id": "FMA72688",
+        "name": "left inferior temporal gyrus"
+      },
+      {
+        "id": "FMA72689",
+        "name": "right fusiform gyrus"
+      },
+      {
+        "id": "FMA72690",
+        "name": "left fusiform gyrus"
+      },
+      {
+        "id": "FMA72701",
+        "name": "right accessory short gyrus"
+      },
+      {
+        "id": "FMA72702",
+        "name": "left accessory short gyrus"
+      },
+      {
+        "id": "FMA72705",
+        "name": "right parahippocampal gyrus"
+      },
+      {
+        "id": "FMA72706",
+        "name": "left parahippocampal gyrus"
+      },
+      {
+        "id": "FMA72717",
+        "name": "right cingulate gyrus"
+      },
+      {
+        "id": "FMA72718",
+        "name": "left cingulate gyrus"
+      },
+      {
+        "id": "FMA72800",
+        "name": "anterior part of right superior temporal gyrus"
+      },
+      {
+        "id": "FMA72801",
+        "name": "anterior part of left superior temporal gyrus"
+      },
+      {
+        "id": "FMA72804",
+        "name": "posterior part of right superior temporal gyrus"
+      },
+      {
+        "id": "FMA72805",
+        "name": "posterior part of left superior temporal gyrus"
+      },
+      {
+        "id": "FMA72975",
+        "name": "right occipital lobe"
+      },
+      {
+        "id": "FMA72976",
+        "name": "left occipital lobe"
+      },
+      {
+        "id": "BP51",
+        "name": "orbital gyri straight gyrus"
+      }
+    ],
+    "spleen": [
+      {
+        "id": "FMA7196",
+        "name": "spleen"
+      }
+    ],
+    "muscles": [
+      {
+        "id": "FMA37684",
+        "name": "short head of right biceps brachii"
+      },
+      {
+        "id": "FMA37686",
+        "name": "long head of right biceps brachii"
+      }
+    ],
+    "knee": [
+      {
+        "id": "FMA24474",
+        "name": "right femur"
+      },
+      {
+        "id": "FMA24477",
+        "name": "right tibia"
+      },
+      {
+        "id": "FMA24480",
+        "name": "right fibula"
+      },
+      {
+        "id": "FMA24486",
+        "name": "right patella"
+      }
+    ]
+  }
+}

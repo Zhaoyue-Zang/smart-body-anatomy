@@ -13,3 +13,5 @@ artifacts/
 .publish-state.json
 scripts/publish_github.py
 assets/anatomy.svg
+
+assets/models/sources/
