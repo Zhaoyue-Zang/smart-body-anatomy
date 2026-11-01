@@ -1,5 +1,11 @@
 # 智触人体 · 医脉相承
 
+网站：https://zhaoyue-zang.github.io/smart-body-anatomy/
+
+三维形态实验室：https://zhaoyue-zang.github.io/smart-body-anatomy/studio.html
+
+GitHub 仓库：https://github.com/Zhaoyue-Zang/smart-body-anatomy
+
 本次改版将模型展示拆为独立的「形态实验室」，以 Blender 处理的真实解剖网格替代原有 SVG 解剖插画。网站采用深色青灰、香槟金和冷暖光影，保留原有知识学习、题库、AI 助教与学习档案。
 
 ## 启动
