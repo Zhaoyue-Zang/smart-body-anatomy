@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>局解 · 极细大纲 + 精选题库</title>
+    <style>
+        /* ===== 全局（与原版一致，仅保留必要部分，省略重复样式） ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #f7f8fa;
+            --paper: #ffffff;
+            --text: #1e2a3a;
+            --text-muted: #5a6a7a;
+            --text-light: #8a9aaa;
+            --border: #e4e8ee;
+            --primary: #1a5276;
+            --primary-light: #d4e2ed;
+            --accent: #2e86c1;
+            --green: #27ae60;
+            --green-bg: #eafaf1;
+            --red: #c0392b;
+            --red-bg: #fdedec;
+            --gold: #f1c40f;
+            --gold-bg: #fef9e7;
+            --radius: 12px;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --font: 'Georgia', 'Segoe UI', system-ui, serif;
+            --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+            font-size: 16px;
+            padding: 20px 0;
+        }
+        body.focus-mode {
+            background: #1a1a2e;
+        }
+        body.focus-mode .app {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 24px 30px;
+            width: 100%;
+            background: var(--paper);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.4s ease, background 0.4s ease;
+            position: relative;
+        }
+
+        /* ===== 头部、Tabs、工具栏等与原版一致（已压缩） ===== */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0 14px;
+            border-bottom: 2px solid var(--border);
+            gap: 12px 16px;
+            background: var(--paper);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: background 0.3s ease;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .header h1 small {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 4px;
+            font-family: var(--font-sans);
+        }
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 14px 20px;
+            flex-wrap: wrap;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+        }
+        .header-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+        }
+        .header-stats .stat-item .num {
+            font-weight: 700;
+            color: var(--text);
+            min-width: 20px;
+        }
+        .header-stats .stat-item .num.done {
+            color: var(--green);
+        }
+        .header-stats .stat-item .num.pct {
+            color: var(--primary);
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 5px 14px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .btn.active:hover {
+            background: #0f3e5c;
+        }
+        .btn.green {
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .btn.green.active {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green);
+        }
+        .btn.green.active:hover {
+            background: #1e8449;
+        }
+        .btn.red {
+            border-color: var(--red);
+            color: var(--red);
+        }
+        .btn.red.active {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+        .btn.red.active:hover {
+            background: #a93226;
+        }
+        .btn.gold {
+            border-color: var(--gold);
+            color: #b7950b;
+        }
+        .btn.gold.active {
+            background: var(--gold);
+            color: #fff;
+            border-color: var(--gold);
+        }
+        .btn-focus {
+            font-size: 1.1rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+        }
+        .btn-focus:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        body.focus-mode .btn-focus {
+            border-color: #4a4a6a;
+            color: #ccc;
+        }
+        body.focus-mode .btn-focus:hover {
+            border-color: #888;
+            background: #2a2a4a;
+            color: #fff;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 0 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+            background: var(--paper);
+            position: sticky;
+            top: 70px;
+            z-index: 40;
+            transition: background 0.3s ease;
+        }
+        .tab-btn {
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .tab-btn .badge-tab {
+            font-size: 0.65rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0 6px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+        .tab-btn.active .badge-tab {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 14px;
+            padding: 6px 0 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            background: var(--paper);
+            position: sticky;
+            top: 120px;
+            z-index: 35;
+            transition: background 0.3s ease;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            background: var(--paper);
+            border-radius: 30px;
+            padding: 4px 16px 4px 18px;
+            border: 1.5px solid var(--border);
+            transition: var(--transition);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+        }
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.10);
+        }
+        .search-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 7px 0;
+            font-size: 0.85rem;
+            width: 100%;
+            color: var(--text);
+            font-family: var(--font-sans);
+        }
+        .search-box input::placeholder {
+            color: var(--text-light);
+        }
+        .toolbar-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .chapter-jump {
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            padding: 5px 10px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: var(--paper);
+            color: var(--text);
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+            max-width: 140px;
+        }
+        .chapter-jump:hover,
+        .chapter-jump:focus {
+            border-color: var(--primary);
+        }
+
+        .content-area {
+            min-height: 400px;
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 大纲、做题、扩展坞等样式与原版一致（省略重复） ===== */
+        .outline { margin-top:4px; padding-bottom:10px; }
+        .chapter { margin-bottom:20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--paper); box-shadow:var(--shadow); overflow:hidden; transition:var(--transition); }
+        .chapter-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#fbfcfd; cursor:pointer; user-select:none; transition:var(--transition); border-bottom:1px solid transparent; gap:12px; }
+        .chapter-header:hover { background:#f5f7fa; }
+        .chapter-header .title { font-size:1.15rem; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .chapter-header .title .badge { font-size:0.65rem; font-weight:500; color:var(--text-muted); background:var(--border); padding:1px 10px; border-radius:30px; font-family:var(--font-sans); }
+        .chapter-header .title .badge.done-badge { background:var(--green-bg); color:var(--green); }
+        .chapter-header .toggle-icon { font-size:1.1rem; color:var(--text-light); transition:transform 0.3s ease; flex-shrink:0; }
+        .chapter-header .toggle-icon.open { transform:rotate(180deg); }
+        .chapter-body { padding:6px 20px 20px; display:block; }
+        .chapter-body.collapsed { display:none; }
+        .subchapter { margin-top:14px; }
+        .subchapter-title { font-size:0.95rem; font-weight:600; color:var(--text); padding:6px 0 4px 8px; border-bottom:1px dashed var(--border); margin-bottom:8px; display:flex; align-items:center; gap:8px; font-family:var(--font-sans); }
+        .subchapter-title .sub-badge { font-size:0.6rem; font-weight:400; color:var(--text-light); background:var(--bg); padding:0 8px; border-radius:20px; }
+        .knowledge-item { display:flex; align-items:flex-start; gap:10px 14px; padding:7px 8px 7px 12px; border-radius:6px; transition:var(--transition); border-left:3px solid transparent; margin-bottom:2px; cursor:default; position:relative; }
+        .knowledge-item:hover { background:#f8faff; }
+        .knowledge-item .marker { flex-shrink:0; width:20px; height:20px; border-radius:50%; border:2px solid var(--border); background:var(--paper); cursor:pointer; transition:var(--transition); margin-top:3px; display:flex; align-items:center; justify-content:center; font-size:11px; color:transparent; font-weight:700; }
+        .knowledge-item .marker:hover { border-color:var(--primary); transform:scale(1.08); }
+        .knowledge-item .marker.done { background:var(--green); border-color:var(--green); color:#fff; }
+        .knowledge-item .marker.done::after { content:"✓"; color:#fff; font-size:12px; }
+        .knowledge-item .content { flex:1; min-width:0; }
+        .knowledge-item .content .q { font-weight:600; color:var(--text); font-size:0.95rem; display:inline; }
+        .knowledge-item .content .q .highlight { background:#fcf3b0; padding:0 2px; border-radius:2px; }
+        .knowledge-item .content .a { color:var(--text-muted); font-size:0.92rem; display:block; margin-top:1px; padding-left:4px; line-height:1.6; }
+        .knowledge-item .content .a .highlight { background:#fcf3b0; padding:0 2px; border-radius:2px; }
+        .knowledge-item .content .q .star { color:#c0392b; font-size:0.85rem; margin-right:2px; }
+        .knowledge-item .item-index { flex-shrink:0; font-size:0.7rem; font-weight:500; color:var(--text-light); font-family:var(--font-sans); min-width:28px; text-align:right; opacity:0.6; margin-top:2px; }
+        .knowledge-item.mastered { border-left-color:var(--green); background:#fafffe; }
+        .knowledge-item.mastered .content .q { color:#1a5a3a; }
+        .search-highlight { background:#fcf3b0; padding:0 2px; border-radius:2px; }
+
+        .quiz-container { max-width:860px; margin:0 auto; padding:10px 0 20px; }
+        .quiz-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+        .quiz-header .info { font-family:var(--font-sans); font-size:0.85rem; color:var(--text-muted); }
+        .quiz-header .info strong { color:var(--text); }
+        .quiz-card { background:var(--paper); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; box-shadow:var(--shadow); margin-bottom:16px; transition:var(--transition); }
+        .quiz-card .q-tag { font-family:var(--font-sans); font-size:0.7rem; font-weight:600; color:var(--primary); background:var(--primary-light); padding:2px 12px; border-radius:30px; display:inline-block; margin-bottom:10px; }
+        .quiz-card .q-text { font-size:1.1rem; font-weight:600; line-height:1.6; margin-bottom:14px; }
+        .quiz-card .q-text.en { font-family:'Times New Roman', serif; font-size:1.15rem; }
+        .quiz-card .options { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+        .quiz-card .options label { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:8px; border:1.5px solid var(--border); cursor:pointer; transition:var(--transition); font-size:0.95rem; font-family:var(--font-sans); }
+        .quiz-card .options label:hover { background:#f8faff; border-color:var(--primary-light); }
+        .quiz-card .options label.selected { border-color:var(--primary); background:var(--primary-light); }
+        .quiz-card .options label.correct { border-color:var(--green); background:var(--green-bg); }
+        .quiz-card .options label.wrong { border-color:var(--red); background:var(--red-bg); }
+        .quiz-card .options label input[type="radio"] { accent-color:var(--primary); width:16px; height:16px; flex-shrink:0; }
+        .quiz-card .feedback { padding:12px 16px; border-radius:8px; margin-top:10px; font-family:var(--font-sans); font-size:0.92rem; display:none; }
+        .quiz-card .feedback.show { display:block; animation:fadeIn 0.25s ease; }
+        .quiz-card .feedback.correct { background:var(--green-bg); border-left:4px solid var(--green); color:#1a5a3a; }
+        .quiz-card .feedback.wrong { background:var(--red-bg); border-left:4px solid var(--red); color:#7a2a1a; }
+        .quiz-card .feedback .exp { margin-top:6px; font-size:0.88rem; color:var(--text-muted); padding:6px 10px; background:rgba(255,255,255,0.5); border-radius:6px; }
+        .quiz-nav { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:6px; }
+        .quiz-nav .btn-group { display:flex; gap:6px; flex-wrap:wrap; }
+        .quiz-nav .btn { padding:8px 20px; font-size:0.82rem; }
+        .quiz-nav .btn.primary-solid { background:var(--primary); color:#fff; border-color:var(--primary); }
+        .quiz-nav .btn.primary-solid:hover { background:#0f3e5c; }
+        .quiz-nav .btn.green-solid { background:var(--green); color:#fff; border-color:var(--green); }
+        .quiz-nav .btn.green-solid:hover { background:#1e8449; }
+        .quiz-nav .btn.outline { background:transparent; border-color:var(--border); }
+        .quiz-nav .btn.outline:hover { border-color:var(--primary); color:var(--primary); }
+        .quiz-nav .progress-text { font-family:var(--font-sans); font-size:0.8rem; color:var(--text-muted); }
+
+        .knowledge-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; z-index:999; padding:20px; }
+        .knowledge-overlay.show { display:flex; }
+        .knowledge-card { background:var(--paper); border-radius:20px; max-width:800px; width:100%; max-height:80vh; overflow-y:auto; padding:30px 34px; box-shadow:0 30px 80px rgba(0,0,0,0.4); animation:fadeIn 0.3s ease; }
+        .knowledge-card h2 { font-size:1.3rem; color:var(--primary); margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+        .knowledge-card .knowledge-item { padding:8px 12px; border-left:3px solid var(--red); background:var(--red-bg); border-radius:6px; margin-bottom:10px; }
+        .knowledge-card .knowledge-item .q { font-weight:600; font-size:0.95rem; }
+        .knowledge-card .knowledge-item .a { color:var(--text-muted); font-size:0.88rem; margin-top:2px; }
+        .knowledge-card .close-btn { margin-top:16px; padding:8px 28px; border-radius:30px; border:none; background:var(--primary); color:#fff; font-family:var(--font-sans); font-weight:600; cursor:pointer; transition:var(--transition); }
+        .knowledge-card .close-btn:hover { background:#0f3e5c; }
+        .knowledge-card .empty-msg { color:var(--text-muted); font-style:italic; padding:20px 0; }
+
+        /* 错题子控制 */
+        .review-sub-controls {
+            display: none;
+            margin-bottom: 14px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .review-sub-controls.show {
+            display: flex;
+        }
+
+        .review-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .review-tabs .rtab {
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .review-tabs .rtab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .review-tabs .rtab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .review-tabs .rtab.gold.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #fff;
+        }
+        .review-tabs .rtab.red.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .review-list {
+            padding: 4px 0;
+        }
+
+        .extension-area { padding:20px 0; }
+        .upload-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:40px 20px; text-align:center; background:#fafbfc; transition:var(--transition); cursor:pointer; margin-bottom:20px; }
+        .upload-zone:hover { border-color:var(--primary); background:var(--primary-light); }
+        .upload-zone.dragover { border-color:var(--green); background:var(--green-bg); }
+        .upload-zone input[type="file"] { display:none; }
+        .upload-zone .icon { font-size:3rem; margin-bottom:10px; }
+        .upload-zone .text { font-size:1rem; color:var(--text-muted); }
+        .upload-zone .sub { font-size:0.8rem; color:var(--text-light); margin-top:6px; }
+        .format-example { background:var(--bg); border-radius:var(--radius); padding:16px 20px; margin-top:16px; font-family:var(--font-sans); font-size:0.85rem; border:1px solid var(--border); }
+        .format-example pre { white-space:pre-wrap; background:var(--paper); padding:12px; border-radius:6px; margin-top:8px; border:1px solid var(--border); font-size:0.8rem; color:var(--text); }
+        .format-example .label { font-weight:600; color:var(--primary); }
+
+        .progress-wrap { width:100%; height:4px; background:var(--border); border-radius:10px; overflow:hidden; margin:6px 0 4px; }
+        .progress-wrap .fill { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:10px; transition:width 0.4s ease; }
+        .progress-label { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-light); font-family:var(--font-sans); margin-top:2px; }
+
+        .empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); background:var(--paper); border-radius:var(--radius); border:1px solid var(--border); }
+        .empty-state .icon { font-size:2.8rem; margin-bottom:12px; }
+        .empty-state h3 { font-size:1.1rem; color:var(--text); margin-bottom:4px; }
+
+        .footer { margin-top:28px; padding-top:14px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; font-size:0.72rem; color:var(--text-light); font-family:var(--font-sans); }
+        .footer .keys { display:flex; gap:12px; flex-wrap:wrap; }
+        .footer .keys kbd { background:var(--bg); padding:1px 8px; border-radius:4px; border:1px solid var(--border); font-size:0.65rem; font-family:var(--font-sans); color:var(--text-muted); }
+
+        @media (max-width:820px) { /* 省略，与原版相同 */ }
+        @media (max-width:540px) { /* 省略 */ }
+        @media print { /* 省略 */ }
+        .mt-8 { margin-top:8px; }
+        .mb-8 { margin-bottom:8px; }
+        .flex-center { display:flex; align-items:center; justify-content:center; }
+        .gap-6 { gap:6px; }
+        .text-center { text-align:center; }
+        .en-font { font-family:'Times New Roman', serif; }
+    </style>
+</head>
+<body class="focus-mode">
+
+    <div class="app" id="app">
+        <!-- ===== 顶部 ===== -->
+        <header class="header">
+            <div class="header-left">
+                <h1>📖 局解·极细 <small>人卫十版 · 全考点</small></h1>
+            </div>
+            <div class="header-stats">
+                <span class="stat-item">📌 <span class="num" id="totalNum">0</span></span>
+                <span class="stat-item">✅ <span class="num done" id="doneNum">0</span></span>
+                <span class="stat-item">📈 <span class="num pct" id="pctNum">0%</span></span>
+                <span class="stat-item" style="font-size:0.7rem;color:var(--text-light);" id="filterInfo">全部</span>
+            </div>
+            <div class="header-controls">
+                <button class="btn-focus" id="focusToggle" title="切换专注模式">☀️</button>
+                <button class="btn" id="expandAllBtn">⊞ 展开</button>
+                <button class="btn" id="collapseAllBtn">⊟ 折叠</button>
+                <button class="btn green" id="showMasteredBtn">✅ 已掌握</button>
+            </div>
+        </header>
+
+        <!-- ===== Tabs ===== -->
+        <div class="tabs" id="tabs">
+            <button class="tab-btn active" data-tab="outline">📖 背诵大纲</button>
+            <button class="tab-btn" data-tab="quiz">🧠 自测 (分组)</button>
+            <button class="tab-btn" data-tab="enquiz">🇺🇸 英文考题</button>
+            <button class="tab-btn" data-tab="review">📊 收藏 & 错题</button>
+            <button class="tab-btn" data-tab="extension">🔌 扩展坞</button>
+        </div>
+
+        <!-- ===== 工具栏 ===== -->
+        <div class="toolbar" id="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 搜索知识点 / 题目 ..." />
+            </div>
+            <div class="toolbar-actions">
+                <select class="chapter-jump" id="chapterJump">
+                    <option value="all">📖 全部章节</option>
+                </select>
+                <button class="btn" id="clearSearchBtn" style="border-color:transparent;color:var(--text-light);">✕ 清除</button>
+            </div>
+        </div>
+
+        <!-- ===== 进度条 ===== -->
+        <div class="progress-wrap"><div class="fill" id="progressFill"></div></div>
+        <div class="progress-label">
+            <span id="progressText">0 / 0 已掌握</span>
+            <span id="progressPct">0%</span>
+        </div>
+
+        <!-- ===== 内容区 ===== -->
+        <div class="content-area">
+
+            <!-- 背诵大纲 -->
+            <div class="tab-pane active" id="pane-outline">
+                <div class="outline" id="outline"></div>
+            </div>
+
+            <!-- 中文自测 -->
+            <div class="tab-pane" id="pane-quiz">
+                <div class="quiz-container" id="quizContainer">
+                    <div class="quiz-header">
+                        <div class="info">📌 <strong id="quizProgress">0 / 0</strong> · 组 <span id="quizGroupLabel">1</span></div>
+                        <div class="btn-group">
+                            <button class="btn outline" id="quizFilterAll">全部</button>
+                            <button class="btn outline" id="quizFilterFav">⭐ 收藏</button>
+                            <button class="btn outline" id="quizFilterWrong">❌ 错题</button>
+                        </div>
+                    </div>
+                    <div id="quizCardArea"></div>
+                </div>
+            </div>
+
+            <!-- 英文考题 -->
+            <div class="tab-pane" id="pane-enquiz">
+                <div class="quiz-container" id="enQuizContainer">
+                    <div class="quiz-header">
+                        <div class="info en-font">🇺🇸 <strong id="enQuizProgress">0 / 0</strong> · Group <span id="enQuizGroupLabel">1</span></div>
+                        <div class="btn-group">
+                            <button class="btn outline" id="enQuizFilterAll">All</button>
+                            <button class="btn outline" id="enQuizFilterFav">⭐ Fav</button>
+                            <button class="btn outline" id="enQuizFilterWrong">❌ Wrong</button>
+                        </div>
+                    </div>
+                    <div id="enQuizCardArea"></div>
+                </div>
+            </div>
+
+            <!-- 收藏 & 错题 -->
+            <div class="tab-pane" id="pane-review">
+                <div class="review-tabs">
+                    <button class="rtab active" data-rtype="fav">⭐ 收藏</button>
+                    <button class="rtab red" data-rtype="wrong">❌ 错题</button>
+                </div>
+                <div class="review-sub-controls" id="reviewSubControls">
+                    <button class="btn outline" id="reviewListBtn">📋 错题列表</button>
+                    <button class="btn outline" id="reviewKnowledgeBtn">📚 错题知识点</button>
+                    <button class="btn primary-solid" id="redoWrongBtn">🔄 重做错题</button>
+                </div>
+                <div class="review-list" id="reviewList"></div>
+            </div>
+
+            <!-- 扩展坞 -->
+            <div class="tab-pane" id="pane-extension">
+                <div class="extension-area">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="icon">📂</div>
+                        <div class="text">点击或拖拽上传 <strong>.txt</strong> 题库文件</div>
+                        <div class="sub">支持中文/英文题目，按格式解析</div>
+                        <input type="file" id="fileInput" accept=".txt" />
+                    </div>
+                    <div id="uploadStatus" style="margin-bottom:12px; font-family:var(--font-sans); font-size:0.9rem;"></div>
+                    <div class="format-example">
+                        <div class="label">📌 文件格式要求（UTF-8 编码）</div>
+                        <pre>
+### 题目：关于胰腺的毗邻，以下哪项正确？
+A. 胰头后方为下腔静脉
+B. 胰颈前方为胃幽门
+C. 胰体后方为腹主动脉
+D. 胰尾达脾门
+答案：A
+解析：胰头后方为下腔静脉、右肾静脉和胆总管胰头段。
+---
+### 题目：Which structure is located in the posterior mediastinum?
+A. Pericardium
+B. Esophagus
+C. Thymus
+D. Phrenic nerve
+答案：B
+解析：The esophagus is in the posterior mediastinum.
+                        </pre>
+                        <div style="margin-top:8px; color:var(--text-light); font-size:0.8rem;">
+                            <strong>说明：</strong>每道题以 <code>### 题目：</code> 或 <code>### 题目：</code>（英文）开头，选项以 <code>A.</code> <code>B.</code> <code>C.</code> <code>D.</code> 开头，答案行以 <code>答案：</code> 或 <code>答案：</code> 开头，解析行以 <code>解析：</code> 开头。题目间用 <code>---</code> 分隔。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== 底部 ===== -->
+        <footer class="footer">
+            <span>📚 共 <strong id="footerTotal">0</strong> 个知识点 · <span id="footerQuizCount">0</span> 道题库</span>
+            <div class="keys">
+                <span><kbd>空格</kbd> 提交/下一题</span>
+                <span><kbd>←/→</kbd> 切换</span>
+                <span><kbd>M</kbd> 过滤切换</span>
+                <span><kbd>F</kbd> 搜索</span>
+            </div>
+        </footer>
+
+        <!-- ===== 错题知识点卡片弹窗（保留） ===== -->
+        <div class="knowledge-overlay" id="knowledgeOverlay">
+            <div class="knowledge-card">
+                <h2>📝 错题相关知识点</h2>
+                <div id="knowledgeContent"></div>
+                <button class="close-btn" id="knowledgeClose">关闭并继续</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  1. 极详细知识点大纲（人卫十版，与原版完全相同）
+        // ================================================================
+        const KNOWLEDGE = [
+            { chapter: '头部', sub: '骨性标志', q: '头部重要的骨性标志有哪些？', a: '眉弓、眶上孔（切迹）、眶下孔、颧弓、翼点、乳突、下颌角、枕外隆凸、上项线。' },
+            { chapter: '头部', sub: '脑膜中动脉投影', q: '脑膜中动脉的体表投影如何？', a: '主干经翼点内面，前支在冠状缝附近上行，后支在鳞状缝附近上行。' },
+            { chapter: '头部', sub: '面动脉', q: '面动脉的行程与分支？', a: '起自颈外动脉，经下颌下腺深面，于咬肌前缘绕下颌骨下缘至面部，经口角和鼻翼外侧上行至内眦，更名为内眦动脉。分支：下唇动脉、上唇动脉、鼻外侧动脉。' },
+            { chapter: '头部', sub: '面静脉', q: '面静脉与海绵窦的交通及临床意义？', a: '面静脉通过眼静脉与海绵窦交通。面静脉无静脉瓣，面部感染（危险三角区）可沿此途径蔓延至海绵窦，导致海绵窦血栓性静脉炎。' },
+            { chapter: '头部', sub: '腮腺', q: '腮腺的位置及“腮腺床”指什么？', a: '位于面侧区，上达颧弓，下至下颌角，前邻咬肌、下颌支和翼内肌，后邻乳突和胸锁乳突肌前缘。★腮腺床：腮腺深面与茎突、茎突诸肌、颈内动脉、颈内静脉、舌咽神经(Ⅸ)、迷走神经(Ⅹ)、副神经(Ⅺ)、舌下神经(Ⅻ)相邻，这些结构共同构成“腮腺床”。' },
+            { chapter: '头部', sub: '腮腺', q: '穿经腮腺的结构（由浅入深）有哪些？', a: '面神经（穿腮腺实质分支）→ 下颌后静脉（颞浅静脉和上颌静脉汇合）→ 颈外动脉（穿入后分为颞浅动脉和上颌动脉终末支）。' },
+            { chapter: '头部', sub: '腮腺', q: '腮腺鞘的结构特点？', a: '由颈深筋膜浅层在腮腺后缘分为浅、深两层包绕腮腺形成，浅层致密，深层薄弱。' },
+            { chapter: '头部', sub: '腮腺', q: '腮腺管的行程和开口部位？', a: '自腮腺前缘发出，长约3.5-5cm，在颧弓下约1横指处向前横行越过咬肌表面，在咬肌前缘急转向内穿过颊肌，开口于上颌第二磨牙牙冠相对的颊黏膜上。' },
+            { chapter: '头部', sub: '颅部层次', q: '额顶枕区的层次结构特点（由浅入深）？', a: '皮肤→浅筋膜（皮下组织）→帽状腱膜及枕额肌→腱膜下疏松结缔组织→颅骨外膜。腱膜下间隙为“危险区”，感染易沿此蔓延。' },
+            { chapter: '头部', sub: '颅部层次', q: '颞区的层次结构特点？', a: '皮肤薄，移动性大；浅筋膜疏松含少量脂肪；颞筋膜分浅深两层，其间含脂肪和颞中血管；颞肌扇形起自颞窝止于下颌骨冠突；骨膜较薄。' },
+            { chapter: '头部', sub: '垂体', q: '垂体的位置、毗邻及临床意义？', a: '位于蝶骨体上面的垂体窝内。上方为鞍膈（隔开视交叉和垂体），前方为鞍结节，下方为蝶窦，两侧为海绵窦。肿瘤可压迫视交叉致双颞侧偏盲，或突入海绵窦压迫脑神经。' },
+            { chapter: '头部', sub: '海绵窦', q: '海绵窦的位置及穿经结构？', a: '位于蝶鞍两侧，为硬脑膜两层间的腔隙。窦内：颈内动脉、展神经(Ⅵ)。窦外侧壁（自上而下）：动眼神经(Ⅲ)、滑车神经(Ⅳ)、眼神经(Ⅴ₁)、上颌神经(Ⅴ₂)。' },
+            { chapter: '头部', sub: '静脉交通', q: '颅内、外静脉的交通途径？', a: '通过眼静脉与面静脉交通；通过导静脉（顶导静脉、乳突导静脉等）与颅外静脉交通；通过板障静脉与颅外静脉交通。' },
+            { chapter: '颈部', sub: '体表标志', q: '颈部的体表标志有哪些？', a: '舌骨（平第3颈椎）、甲状软骨（喉结，平第4颈椎）、环状软骨（平第6颈椎，喉与气管分界标志）、胸锁乳突肌（后缘中点为颈丛皮神经穿出点——神经点）、颈静脉切迹。' },
+            { chapter: '颈部', sub: '颈筋膜', q: '颈筋膜的层次（三层）及特点？', a: '浅层（封套筋膜）：包绕整个颈部，在腮腺和下颌下腺处分为两层包绕腺体。中层（气管前筋膜）：位于舌骨下肌群深面，包绕甲状腺形成甲状腺鞘。深层（椎前筋膜）：覆盖椎前肌和斜角肌，向下延续为腋鞘。' },
+            { chapter: '颈部', sub: '下颌下三角', q: '下颌下三角的构成及内容？', a: '由下颌骨下缘和二腹肌前、后腹围成。内容：下颌下腺、面动脉、面静脉、下颌下淋巴结、舌神经、下颌舌骨肌神经。' },
+            { chapter: '颈部', sub: '颈动脉三角', q: '颈动脉三角的境界及内容？', a: '由胸锁乳突肌上份前缘、肩胛舌骨肌上腹和二腹肌后腹围成。内容：颈总动脉及其分叉（颈内、颈外动脉）、颈内静脉及其属支、迷走神经(Ⅹ)、副神经(Ⅺ)、舌下神经(Ⅻ)、颈深上淋巴结。' },
+            { chapter: '颈部', sub: '肌三角', q: '肌三角的境界、层次及内容？', a: '由颈前正中线、胸锁乳突肌前缘和肩胛舌骨肌上腹围成。层次：皮肤→浅筋膜→颈深筋膜浅层→舌骨下肌群→气管前筋膜→脏器。内容：甲状腺、甲状旁腺、气管颈部、食管颈部、喉返神经、喉上神经。' },
+            { chapter: '颈部', sub: '甲状腺', q: '甲状腺的形态、被膜、位置及毗邻？', a: '形态“H”形，分左右叶和峡部，约50%有锥状叶。被膜：纤维囊（真被膜）+ 甲状腺鞘（假被膜，由气管前筋膜形成）。位置：喉下部和气管颈部前外侧。毗邻：前面为皮肤→浅筋膜→颈深筋膜浅层→舌骨下肌群→气管前筋膜；后内侧邻喉与气管、咽与食管及喉返神经；后外侧邻颈动脉鞘和颈交感干；后面邻甲状旁腺。' },
+            { chapter: '颈部', sub: '甲状腺', q: '甲状腺的血管供应？', a: '甲状腺上动脉（起自颈外动脉，与喉上神经外支伴行）；甲状腺下动脉（起自甲状颈干，与喉返神经关系密切）；甲状腺最下动脉（起自头臂干或主动脉弓，出现率约10%）。' },
+            { chapter: '颈部', sub: '喉上神经', q: '喉上神经与甲状腺上动脉的关系？', a: '喉上神经起自迷走神经(Ⅹ)下神经节。内支（感觉支）分布声门裂以上喉黏膜；外支（运动支）支配环甲肌。外支与甲状腺上动脉伴行并交叉（动脉在后、神经在前），手术结扎甲状腺上动脉需紧贴甲状腺上极，以免损伤外支致声音低钝。' },
+            { chapter: '颈部', sub: '喉返神经', q: '喉返神经与甲状腺下动脉的关系？', a: '喉返神经起自迷走神经(Ⅹ)，左侧绕主动脉弓返行，右侧绕右锁骨下动脉返行。分布于声门裂以下喉黏膜及除环甲肌外所有喉肌。与甲状腺下动脉在甲状腺后方交叉——左侧神经多在动脉后方，右侧多在动脉前方。结扎甲状腺下动脉需远离下极，以免损伤致声音嘶哑。' },
+            { chapter: '颈部', sub: '气管颈部', q: '气管颈部的毗邻及气管切开术要点？', a: '毗邻：前面为皮肤→浅筋膜→颈深筋膜浅层→舌骨下肌群→气管前筋膜→第2-4气管软骨环前方有甲状腺峡部；后面为食管；两侧为甲状腺侧叶、颈动脉鞘、喉返神经。切开术：切口在颈前正中线环状软骨与胸骨颈静脉切迹之间，安全切开位置为第3-4气管软骨环（峡部下方）。' },
+            { chapter: '颈部', sub: '颈动脉鞘', q: '颈动脉鞘的位置和内容？', a: '位于胸锁乳突肌后缘深面，自颈根部上行至颅底。内容：颈总动脉（及颈内动脉）、颈内静脉、迷走神经(Ⅹ)。' },
+            { chapter: '颈部', sub: '斜角肌间隙', q: '斜角肌间隙的构成及穿行结构？', a: '由前斜角肌、中斜角肌和第1肋围成。穿行结构：锁骨下动脉和臂丛神经（上、中、下干）。锁骨下静脉不穿经此间隙（走行于前斜角肌前方）。' },
+            { chapter: '胸部', sub: '体表标志', q: '胸部的体表标志有哪些？', a: '胸骨角（平第2肋软骨，后方平第4胸椎下缘）、剑突（平第9胸椎）、肋弓（第7-10肋软骨连接）、锁骨中线、腋前线、腋中线、腋后线。' },
+            { chapter: '胸部', sub: '乳房', q: '女性乳房的形态、构造及淋巴回流？', a: '半球形，位于第2-6肋高度。构造：皮肤、乳腺组织（15-20个乳腺叶，各有输乳管开口于乳头）、脂肪组织、乳腺悬韧带(Cooper韧带)。淋巴回流：外侧部及中央部→腋淋巴结；内侧部→胸骨旁淋巴结→支气管纵隔干；下内侧部→膈上淋巴结→肝淋巴结；深部→胸肌间淋巴结(Rotter淋巴结)。' },
+            { chapter: '胸部', sub: '皮神经节段', q: '胸部皮神经的节段性分布（体表标志）？', a: 'T2→胸骨角平面；T4→乳头平面；T6→剑突平面；T8→两侧肋弓连线中点平面（肋弓平面）；T10→脐平面；T12→脐与耻骨联合连线中点平面。相邻节段有重叠，一个节段受损不会导致相应区域感觉完全丧失。' },
+            { chapter: '胸部', sub: '肋间隙', q: '肋间隙结构及血管神经走行关系？', a: '肋间肌（由浅入深）：肋间外肌、肋间内肌、肋间最内肌。血管神经走行（自上而下）：肋间静脉→肋间动脉→肋间神经（VAN排列）。走行于肋沟内（肋间内肌与肋间最内肌之间），位于相应肋骨下缘。胸腔穿刺应在肋骨上缘进针。' },
+            { chapter: '胸部', sub: '胸膜腔', q: '胸膜腔的构成、胸膜顶位置及胸膜隐窝？', a: '由壁胸膜和脏胸膜在肺根处相互移行围成的潜在性腔隙，左右各一互不相通。胸膜顶突出于胸廓上口上方约2-3cm，达第1肋颈以上。胸膜隐窝：肋膈隐窝（位置最低，积液首先积聚于此）、肋纵隔隐窝。' },
+            { chapter: '胸部', sub: '胸膜腔', q: '胸膜下界的体表投影？', a: '锁骨中线平第8肋；腋中线平第10肋；肩胛线平第11肋；后正中线平第12胸椎棘突。' },
+            { chapter: '胸部', sub: '肺根', q: '肺根各结构的排列关系？', a: '前后排列（从前向后）：肺静脉→肺动脉→主支气管。左肺根（自上而下）：肺动脉→左主支气管→下肺静脉。右肺根（自上而下）：上叶支气管→肺动脉→中、下叶支气管→肺静脉。' },
+            { chapter: '胸部', sub: '纵隔', q: '纵隔的概念、境界和分区？', a: '左右纵隔胸膜之间所有器官和组织的总称。前为胸骨，后为脊柱胸段，上为胸廓上口，下为膈。以胸骨角平面为界分为上纵隔和下纵隔（下纵隔再分为前、中、后纵隔）。' },
+            { chapter: '胸部', sub: '上纵隔', q: '上纵隔内器官结构层次（由前向后）？', a: '胸腺（或遗迹）→头臂静脉、上腔静脉→主动脉弓及其三大分支（头臂干、左颈总动脉、左锁骨下动脉）→气管及食管→胸导管→迷走神经、膈神经、左喉返神经。' },
+            { chapter: '胸部', sub: '主动脉弓', q: '主动脉弓的毗邻及动脉导管三角？', a: '主动脉弓毗邻：前方为胸腺、左膈神经、左迷走神经；后方为气管、食管、左喉返神经、胸导管；上方为三大分支；下方为肺动脉分叉、动脉韧带、左主支气管、左喉返神经。动脉导管三角由主动脉弓（上界）、肺动脉（下界）和左喉返神经（内侧界）围成，内容为动脉韧带和左喉返神经。' },
+            { chapter: '胸部', sub: '纵隔分区', q: '前、中、后纵隔的位置及内容？', a: '前纵隔：胸骨与心包之间，含胸腺下部、疏松结缔组织、淋巴结。中纵隔：心包所在区域，含心包、心脏、出入心的大血管根部、膈神经、心包膈血管。后纵隔：心包与脊柱胸段之间，含食管胸部、胸主动脉、奇静脉、半奇静脉、胸导管、迷走神经、交感干。' },
+            { chapter: '胸部', sub: '食管', q: '食管胸部的毗邻？', a: '前方为气管、左主支气管、左心房、心包；后方为脊柱、胸主动脉（食管下段）、奇静脉、半奇静脉、胸导管；左侧为左颈总动脉、左锁骨下动脉、主动脉弓、胸主动脉；右侧为奇静脉、右迷走神经。' },
+            { chapter: '腹部', sub: '体表标志', q: '腹部的体表标志有哪些？', a: '剑突、肋弓、脐、髂前上棘、髂嵴、耻骨联合、耻骨结节、腹直肌、腹白线、半月线。' },
+            { chapter: '腹部', sub: '腹壁层次', q: '腹前外侧壁的层次结构（由浅入深）？', a: '皮肤→浅筋膜（Camper筋膜脂肪层、Scarpa筋膜膜性层）→深筋膜→腹外斜肌→腹内斜肌→腹横肌→腹横筋膜→腹膜外脂肪→壁腹膜。' },
+            { chapter: '腹部', sub: '腹直肌鞘', q: '腹直肌鞘的构成和弓状线？', a: '前层由腹外斜肌腱膜和腹内斜肌腱膜前层愈合成；后层由腹内斜肌腱膜后层和腹横肌腱膜愈合成。弓状线（半环线）：在脐下4-5cm处，腹直肌鞘后层缺如，形成弓状游离缘，其下方腹直肌后面直接与腹横筋膜相贴。' },
+            { chapter: '腹部', sub: '腹股沟管', q: '腹股沟管的位置、构成及内容？', a: '位于腹股沟韧带内侧半上方，长4-5cm。四壁：前壁为腹外斜肌腱膜，后壁为腹横筋膜，上壁为腹内斜肌和腹横肌弓状下缘，下壁为腹股沟韧带。两口：深环位于腹股沟韧带中点上方1.5cm，浅环位于耻骨结节外上方。内容：男性为精索，女性为子宫圆韧带，另有髂腹股沟神经。' },
+            { chapter: '腹部', sub: '腹股沟三角', q: '腹股沟三角的构成及斜疝与直疝的鉴别？', a: '由腹壁下动脉（外侧界）、腹直肌外侧缘（内侧界）和腹股沟韧带（下界）围成。鉴别：斜疝经腹股沟管深环→管→浅环，疝囊颈在腹壁下动脉外侧，可进入阴囊，压迫深环后不复出；直疝经腹股沟三角直接突出，疝囊颈在腹壁下动脉内侧，不进入阴囊，压迫深环后仍可复出。' },
+            { chapter: '腹部', sub: '网膜孔', q: '网膜孔和网膜囊的境界及临床意义？', a: '网膜孔位于肝十二指肠韧带（前方）、肝尾状叶（上方）、十二指肠上部（下方）、下腔静脉（后方）之间。网膜囊前壁为小网膜、胃后壁、胃结肠韧带；后壁为横结肠及其系膜、胰、左肾、左肾上腺；上壁为肝尾状叶和膈；下壁为横结肠及其系膜；左侧为脾、脾肾韧带、脾胃韧带；右侧经网膜孔通大腹膜腔。临床意义：胃后壁穿孔或胰腺炎时渗出物常积聚于网膜囊内。' },
+            { chapter: '腹部', sub: '胃', q: '胃的位置、毗邻、韧带及动脉供应？', a: '位置：大部分在左季肋区，小部分在腹上区。毗邻：前壁右侧邻肝左叶，左侧邻膈，中间部分贴腹前壁；后壁邻胰、横结肠、左肾、左肾上腺；胃底邻膈和脾。韧带：肝胃韧带、肝十二指肠韧带、胃脾韧带、胃结肠韧带、膈胃韧带。动脉：胃左动脉（腹腔干）、胃右动脉（肝固有动脉）、胃网膜左动脉（脾动脉）、胃网膜右动脉（胃十二指肠动脉）、胃短动脉（脾动脉）。' },
+            { chapter: '腹部', sub: '十二指肠', q: '十二指肠的分部及毗邻？', a: '分上部、降部、水平部、升部。上部前方为肝和胆囊，后方为胆总管、门静脉、胃十二指肠动脉；降部前方为横结肠及其系膜，后方为右肾门及输尿管，内侧为胰头；水平部前方为肠系膜上动静脉，后方为下腔静脉、腹主动脉；升部前方为横结肠系膜，后方为腹主动脉。十二指肠悬肌(Treitz韧带)连于十二指肠空肠曲与膈脚之间，是手术中确认空肠起始部的标志。' },
+            { chapter: '腹部', sub: '肝', q: '肝的位置、毗邻、体表投影及肝蒂排列？', a: '位置：大部分在右季肋区和腹上区。毗邻：上面邻膈；下面邻胃、十二指肠、右肾、右肾上腺、结肠右曲；后面邻下腔静脉、食管。体表投影：上界右锁骨中线平第5肋，下界右锁骨中线平右侧肋弓，前正中线平剑突下约3cm。肝蒂（肝十二指肠韧带）排列（由前向后）：肝左、右管→肝固有动脉→肝门静脉。' },
+            { chapter: '腹部', sub: '胆囊', q: '胆囊的位置、体表投影及胆囊三角？', a: '胆囊位于肝下面的胆囊窝内。胆囊底体表投影：右锁骨中线与右肋弓的交点（Murphy征检查点）。胆囊三角(Calot三角)由胆囊管、肝总管和肝的脏面围成，内容为胆囊动脉（起自肝固有动脉右支）。' },
+            { chapter: '腹部', sub: '胆总管', q: '胆总管的分段？', a: '十二指肠上段（肝十二指肠韧带内下行）→十二指肠后段（十二指肠上部后方）→胰腺段（胰头后面，常埋于胰腺实质内）→十二指肠壁内段（斜穿十二指肠降部后内侧壁，开口于十二指肠大乳头）。' },
+            { chapter: '腹部', sub: '胰腺', q: '胰的分部与毗邻（头、颈、体、尾）？', a: '胰头：被十二指肠“C”形包绕，前方为横结肠及其系膜，后方为下腔静脉、右肾静脉、胆总管胰头段，左侧为肠系膜上动静脉，钩突将门静脉起始部及肠系膜上血管夹在胰腺实质部。胰颈：前方为胃幽门，后方为肠系膜上静脉与脾静脉汇合形成肝门静脉处。胰体：前方为胃后壁（隔网膜囊），后方为腹主动脉、左肾、左肾上腺、左肾血管，上方为腹腔干及其分支，下缘为肠系膜下动脉起始部。胰尾：各面有腹膜覆盖，末端达脾门。' },
+            { chapter: '腹部', sub: '空回肠', q: '空、回肠动脉分布特点及临床意义？', a: '空回肠动脉起自肠系膜上动脉，在肠系膜内形成多级动脉弓（近段1-2级，远段3-4级甚至5级）。从动脉弓发出直动脉，在肠壁系膜侧进入肠壁。临床意义：肠切除吻合时应扇形切除系膜以保证吻合口血供，避免缺血坏死。' },
+            { chapter: '腹部', sub: '阑尾', q: '阑尾根部的体表投影及寻找方法？', a: '体表投影：脐与右髂前上棘连线的中、外1/3交界处（McBurney点）。寻找方法：沿结肠带向盲肠末端追踪，三条结肠带汇聚于阑尾根部，是术中寻找阑尾的最可靠标志。' },
+            { chapter: '腹部', sub: '结肠', q: '结肠的动脉供应及Sudeck危险区？', a: '右半结肠由肠系膜上动脉供应（回结肠动脉、右结肠动脉、中结肠动脉）；左半结肠由肠系膜下动脉供应（左结肠动脉、乙状结肠动脉）。边缘动脉在乙状结肠与直肠交界处（Sudeck危险区）吻合较差，结扎肠系膜下动脉时需注意保留边缘动脉血供。' },
+            { chapter: '腹部', sub: '门静脉', q: '肝门静脉的组成、属支、特点及与腔静脉的吻合？', a: '由肠系膜上静脉和脾静脉在胰颈后方汇合而成。主要属支：肠系膜上静脉、脾静脉、肠系膜下静脉、胃左静脉、胃右静脉、胆囊静脉、附脐静脉。特点：起始和末端均为毛细血管，无静脉瓣，占肝脏血供70%-80%。与腔静脉吻合：食管静脉丛（食管静脉曲张）、直肠静脉丛（痔疮）、脐周静脉网（海蛇头）、Retzius静脉。' },
+            { chapter: '腹部', sub: '腹膜后隙', q: '腹膜后隙的境界和内容？', a: '前为壁腹膜，后为腹内筋膜，上为膈，下为骶骨岬，两侧为腰方肌外侧缘。内容：肾、输尿管、肾上腺、腹主动脉、下腔静脉、腰交感干、胰（部分）、十二指肠（部分）。' },
+            { chapter: '腹部', sub: '肾', q: '肾的位置、毗邻、肾门、肾窦、肾蒂及被膜？', a: '位于脊柱两侧，左肾平T₁₁-L₂，右肾低半个椎体（平T₁₂-L₃）。毗邻：左肾前方为胃、胰、脾、空肠、结肠左曲，后方为膈、腰大肌、腰方肌等；右肾前方为肝、十二指肠、结肠右曲。肾门为肾内侧缘中部凹陷。肾窦为肾门向肾内延伸的腔隙。肾蒂排列（由前向后）：肾静脉→肾动脉→肾盂；（由上到下）：肾动脉→肾静脉→肾盂。被膜（由内向外）：纤维囊、脂肪囊（肾床）、肾筋膜(Gerota筋膜)。' },
+            { chapter: '腹部', sub: '肾上腺', q: '肾上腺的形态、位置及血管？', a: '位于肾上端的内上方，左肾上腺呈半月形，右肾上腺呈三角形。动脉：肾上腺上动脉（膈下动脉）、肾上腺中动脉（腹主动脉）、肾上腺下动脉（肾动脉）。静脉：左肾上腺静脉→左肾静脉；右肾上腺静脉→下腔静脉。' },
+            { chapter: '盆部与会阴', sub: '概述', q: '盆部和会阴部的境界、分区？', a: '盆部上为骨盆上口，下为盆膈。会阴位于盆膈以下，呈菱形，前为耻骨联合，后为尾骨尖，两侧为坐骨结节。以两侧坐骨结节连线为界分为前方的尿生殖区和后方的肛区。' },
+            { chapter: '盆部与会阴', sub: '盆膈', q: '盆膈的构成？', a: '由肛提肌、尾骨肌及其上、下面的盆膈上筋膜和盆膈下筋膜共同构成，封闭骨盆下口的大部分。' },
+            { chapter: '盆部与会阴', sub: '髂内动脉', q: '髂内动脉的主要分支及子宫动脉与输尿管的关系？', a: '壁支：髂腰动脉、骶外侧动脉、臀上动脉、臀下动脉、闭孔动脉。脏支：膀胱上动脉、膀胱下动脉、子宫动脉、阴道动脉、直肠下动脉、阴部内动脉。子宫动脉在子宫颈外侧约2cm处从输尿管前上方跨过（“桥下流水”），子宫切除术中结扎子宫动脉时需注意勿损伤其下方的输尿管。' },
+            { chapter: '盆部与会阴', sub: '直肠', q: '直肠的毗邻？', a: '前方男性为膀胱、输尿管末端、精囊、前列腺，女性为子宫、阴道；后方为骶骨、尾骨、骶前血管、骶交感干；两侧为坐骨肛门窝内的脂肪组织和血管神经。' },
+            { chapter: '盆部与会阴', sub: '膀胱', q: '膀胱的毗邻？', a: '前方为耻骨联合（其间有Retzius间隙）；后方男性为精囊、输精管、直肠，女性为子宫、阴道；上方为腹膜和小肠（充盈时升入腹腔）；下方男性为前列腺，女性为尿生殖膈。' },
+            { chapter: '盆部与会阴', sub: '前列腺', q: '前列腺的位置、毗邻和被膜？', a: '位于膀胱颈下方，包绕尿道起始部。上方为膀胱，下方为尿生殖膈，前方为耻骨联合（隔前列腺静脉丛），后方为直肠（可经直肠指检触及）。被膜为前列腺鞘（由盆筋膜脏层形成）。' },
+            { chapter: '盆部与会阴', sub: '子宫', q: '子宫的位置、毗邻及固定装置？', a: '位于盆腔中央，前为膀胱，后为直肠，呈前倾前屈位。固定装置：子宫阔韧带（限制向两侧移动）、子宫圆韧带（经腹股沟管止于大阴唇皮下）、子宫主韧带（固定子宫颈，防止向下脱垂）、骶子宫韧带（牵引子宫颈向后上方）。' },
+            { chapter: '盆部与会阴', sub: '坐骨肛门窝', q: '坐骨肛门窝的位置、境界及内容？', a: '位于肛管两侧的楔形腔隙。尖（上界）为盆膈下筋膜与闭孔筋膜汇合处，底（下界）为会阴部皮肤及浅筋膜，内侧壁为肛提肌、肛门外括约肌、肛管，外侧壁为闭孔内肌及其筋膜、坐骨结节，后界为臀大肌、骶结节韧带、尾骨。内容：大量脂肪组织、阴部内动脉、阴部内静脉、阴部神经。两个坐骨肛门窝通过肛后深隙相交通。' },
+            { chapter: '盆部与会阴', sub: '会阴浅筋膜', q: '会阴浅筋膜的延续关系？', a: '会阴浅筋膜向前与腹前外侧壁的Scarpa筋膜相延续，向后与臀部的浅筋膜相延续，两侧附着于坐骨耻骨支和坐骨结节。' },
+            { chapter: '盆部与会阴', sub: '尿生殖膈', q: '尿生殖膈的构成？', a: '由尿生殖膈上筋膜、尿生殖膈下筋膜和二者之间的会阴深横肌、尿道括约肌共同构成，封闭尿生殖区。' },
+            { chapter: '盆部与会阴', sub: '会阴隙', q: '会阴浅隙与会阴深隙的构成及内容？', a: '会阴浅隙：位于尿生殖膈下筋膜与会阴浅筋膜之间，内含会阴浅横肌、球海绵体肌、坐骨海绵体肌、阴部内血管、阴部神经分支。会阴深隙：位于尿生殖膈上、下筋膜之间，内含会阴深横肌、尿道括约肌、尿道球腺、阴部内动脉、阴部神经。尿道球部破裂→尿液渗入会阴浅隙→蔓延至阴囊、阴茎；尿道膜部破裂→尿液渗入会阴深隙→可蔓延至盆腔。' },
+            { chapter: '脊柱区', sub: '肌肉', q: '脊柱区肌肉的层次？', a: '浅层：斜方肌、背阔肌；中层：肩胛提肌、菱形肌、上后锯肌、下后锯肌；深层：竖脊肌（棘肌、最长肌、髂肋肌）、横突棘肌（半棘肌、多裂肌、回旋肌）。' },
+            { chapter: '脊柱区', sub: '听诊三角', q: '听诊三角的位置、境界及临床意义？', a: '位于肩胛骨下角内侧。由斜方肌（上内侧界）、背阔肌（下外侧界）和肩胛骨脊柱缘（外侧界）围成。此区胸壁较薄，是肺部听诊的最佳部位。' },
+            { chapter: '脊柱区', sub: '腰上三角', q: '腰上三角(Grynfeltt三角)的位置、境界及临床意义？', a: '位于第12肋下方。由下后锯肌（上内侧界）、竖脊肌外侧缘（内侧界）、腹内斜肌后缘（外侧界）、第12肋（上界）围成。为腹后壁薄弱区，是腰疝的好发部位。' },
+            { chapter: '脊柱区', sub: '腰下三角', q: '腰下三角(Petit三角)的位置、境界及临床意义？', a: '位于髂嵴上方。由背阔肌（内侧界）、腹外斜肌后缘（外侧界）、髂嵴（下界）围成。亦为腹后壁薄弱区，可发生腰疝。' },
+            { chapter: '上肢', sub: '体表标志', q: '上肢的体表标志有哪些？', a: '锁骨、肩峰、喙突、肱骨内上髁、肱骨外上髁、尺骨鹰嘴、桡骨茎突、尺骨茎突、腕豆骨、掌骨。' },
+            { chapter: '上肢', sub: '浅静脉', q: '上肢浅静脉（头静脉、贵要静脉、肘正中静脉）的行程？', a: '头静脉：起自手背静脉网桡侧，沿前臂桡侧、臂前外侧上行，经三角肌胸大肌间沟注入腋静脉。贵要静脉：起自手背静脉网尺侧，沿前臂尺侧、臂内侧上行，在臂中份穿深筋膜注入肱静脉。肘正中静脉：连接头静脉与贵要静脉，位于肘前区，为临床静脉穿刺常用部位。' },
+            { chapter: '上肢', sub: '腋窝', q: '腋窝的构成及内容？', a: '顶（上口）由锁骨中1/3、第1肋和肩胛骨上缘围成；底为皮肤、浅筋膜和腋筋膜；前壁为胸大肌、胸小肌、锁骨下肌及锁胸筋膜；后壁为肩胛下肌、大圆肌、背阔肌；内侧壁为前锯肌、胸廓；外侧壁为肱骨结节间沟。内容：腋动脉及其分支、腋静脉及其属支、臂丛及其分支、腋淋巴结、疏松结缔组织。' },
+            { chapter: '上肢', sub: '腋动脉', q: '腋动脉的分段（以胸小肌为标志）及主要分支？', a: '第1段（胸小肌上缘以上）：胸上动脉。第2段（胸小肌后方）：胸肩峰动脉、胸外侧动脉。第3段（胸小肌下缘以下）：肩胛下动脉（最大分支）、旋肱前动脉、旋肱后动脉。' },
+            { chapter: '上肢', sub: '腋淋巴结', q: '腋动脉与臂丛的关系及腋淋巴结分群？', a: '臂丛内侧束、外侧束、后束分别位于腋动脉的内侧、外侧、后方。腋淋巴结分群：胸肌淋巴结（前群，收纳乳房外侧部、胸前外侧壁）、肩胛下淋巴结（后群，收纳肩背部、胸后壁）、外侧淋巴结（外侧群，收纳上肢）、中央淋巴结（收纳上述三群）、尖淋巴结（收纳中央淋巴结及乳房上部淋巴，汇入锁骨下干）。' },
+            { chapter: '上肢', sub: '三边四边孔', q: '三边孔和四边孔的构成及穿行结构？', a: '三边孔：上界为肩胛下肌和小圆肌，下界为大圆肌，外侧界为肱三头肌长头，穿行旋肩胛动脉。四边孔：上界为肩胛下肌和小圆肌，下界为大圆肌，内侧界为肱三头肌长头，外侧界为肱骨外科颈，穿行腋神经和旋肱后动脉。' },
+            { chapter: '上肢', sub: '肩袖', q: '肌腱袖（肩袖）的构成及作用？', a: '由肩胛下肌（前）、冈上肌（上）、冈下肌（后上）、小圆肌（后下）的肌腱包绕肩关节形成。作用：加强肩关节稳定性。' },
+            { chapter: '上肢', sub: '腋神经', q: '腋神经支配的肌肉？', a: '三角肌和小圆肌。' },
+            { chapter: '上肢', sub: '臂前区', q: '臂前区骨筋膜鞘内的肌肉？', a: '肱二头肌（浅层）、喙肱肌（肱二头肌内侧深面）、肱肌（肱二头肌深面、肱骨前面）。' },
+            { chapter: '上肢', sub: '肱动脉', q: '肱动脉的主要分支及正中神经在臂部的行径？', a: '肱动脉主要分支为肱深动脉（伴桡神经行于肱骨肌管）。正中神经初位于肱动脉外侧，至臂中份跨过肱动脉前方至其内侧，沿肱二头肌内侧沟下行（上段在外侧，下段在内侧）。' },
+            { chapter: '上肢', sub: '肱骨肌管', q: '肱骨肌管的构成和通过结构？', a: '由肱三头肌与肱骨的桡神经沟围成。通过结构：桡神经和肱深动脉。' },
+            { chapter: '上肢', sub: '肘窝', q: '肘窝的构成及内容？', a: '上界为肱骨内、外上髁连线；下外侧界为肱桡肌；下内侧界为旋前圆肌；顶为肘前深筋膜和肱二头肌腱膜；底为肱肌和旋后肌。内容（由尺侧到桡侧）：正中神经→肱动脉（分叉为桡、尺动脉）→肱二头肌腱→桡神经。肘窝为测量血压、静脉穿刺的常用部位。' },
+            { chapter: '上肢', sub: '前臂前肌', q: '前臂前骨筋膜鞘内肌肉的分层？', a: '第1层（浅层）：肱桡肌、旋前圆肌、桡侧腕屈肌、掌长肌、尺侧腕屈肌。第2层：指浅屈肌。第3层：拇长屈肌（外侧）、指深屈肌（内侧）。第4层：旋前方肌。' },
+            { chapter: '上肢', sub: '前臂血管神经束', q: '桡、尺、正中血管神经束的构成？', a: '桡血管神经束：桡动脉+桡静脉+桡神经浅支（走行于肱桡肌与桡侧腕屈肌之间）。尺血管神经束：尺动脉+尺静脉+尺神经（走行于指浅屈肌与尺侧腕屈肌之间）。正中血管神经束：正中神经+正中动脉（走行于指浅屈肌与指深屈肌之间）。' },
+            { chapter: '上肢', sub: '腕管', q: '腕管的构成及通过结构？', a: '由腕横韧带（屈肌支持带）与腕骨沟共同围成。通过结构：4条指浅屈肌腱、4条指深屈肌腱、拇长屈肌腱、正中神经。腕管综合征为正中神经受压所致。' },
+            { chapter: '上肢', sub: '掌浅弓', q: '掌浅弓和掌深弓的构成、位置及分支？', a: '掌浅弓：由尺动脉终支与桡动脉掌浅支吻合形成，位于掌腱膜深面、指屈肌腱浅面，发出3条指掌侧总动脉→各分为2条指掌侧固有动脉。掌深弓：由桡动脉终支与尺动脉掌深支吻合形成，位于指屈肌腱深面、掌骨和骨间肌表面，发出掌心动脉与指掌侧总动脉吻合。' },
+            { chapter: '上肢', sub: '手神经', q: '正中神经和尺神经在手部的分布？', a: '正中神经：支配鱼际肌（拇短展肌、拇对掌肌、拇短屈肌浅头——“三块半”肌肉）、第1、2蚓状肌。感觉分布手掌桡侧半、桡侧3½指掌面及中远节指背。尺神经：支配小鱼际肌、骨间肌、第3、4蚓状肌、拇收肌、拇短屈肌深头。感觉分布手掌尺侧半、尺侧1½指掌面及手背尺侧半。' },
+            { chapter: '下肢', sub: '体表标志', q: '下肢的体表标志有哪些？', a: '髂嵴、髂前上棘、耻骨结节、坐骨结节、股骨大转子、髌骨、胫骨粗隆、胫骨前缘、腓骨头、内踝、外踝、跟腱、足弓。' },
+            { chapter: '下肢', sub: '大隐静脉', q: '大隐静脉的起止、行程、属支及临床意义？', a: '起自足背静脉弓内侧端，经内踝前方、小腿内侧、膝内侧、大腿内侧上行，于耻骨结节外下方约3cm处穿隐静脉裂孔(卵圆窝)注入股静脉。属支：旋髂浅静脉、腹壁浅静脉、阴部外静脉、股内侧浅静脉、股外侧浅静脉。有10-20对静脉瓣，汇入股静脉处有一重要瓣膜防止逆流。为临床静脉切开和高位结扎剥脱术的主要血管。' },
+            { chapter: '下肢', sub: '梨状肌', q: '穿经梨状肌上、下孔及坐骨小孔的血管神经排列？', a: '梨状肌上孔（外侧到内侧）：臀上神经→臀上动脉→臀上静脉。梨状肌下孔（外侧到内侧）：坐骨神经→股后皮神经→臀下神经→臀下动脉→臀下静脉→阴部内动脉→阴部内静脉→阴部神经（坐骨神经最大、最外侧）。坐骨小孔：阴部内动脉→阴部内静脉→阴部神经。' },
+            { chapter: '下肢', sub: '腹股沟淋巴结', q: '腹股沟淋巴结的分群、位置及收集范围？', a: '腹股沟浅淋巴结（腹股沟韧带下方浅筋膜内）：上群（斜群）沿腹股沟韧带排列，收纳腹前外侧壁下部、臀部、会阴部、外生殖器、肛管下部、子宫部分淋巴；下群（垂直群）沿大隐静脉末端排列，收纳下肢浅淋巴。腹股沟深淋巴结（阔筋膜深面、股静脉内侧）：收纳浅淋巴结深组及下肢深淋巴管。回流：腹股沟深淋巴结→髂外淋巴结→髂总淋巴结→腰淋巴结。' },
+            { chapter: '下肢', sub: '股前内肌', q: '股前内侧部肌肉的分群？', a: '前群：缝匠肌、股四头肌（股直肌、股内侧肌、股外侧肌、股中间肌）。内侧群：耻骨肌、长收肌、短收肌、大收肌、股薄肌。' },
+            { chapter: '下肢', sub: '肌腔隙', q: '肌腔隙和血管腔隙的构成及通过结构？', a: '肌腔隙：前界为腹股沟韧带，后界为髂骨，内侧界为髂耻弓，通过髂腰肌和股神经。血管腔隙：前界为腹股沟韧带，后界为耻骨上支和耻骨梳韧带，外侧界为髂耻弓，内侧界为腔隙韧带，通过股动脉、股静脉、股管（最内侧）。' },
+            { chapter: '下肢', sub: '股三角', q: '股三角的位置、境界、内容及股管？', a: '位于大腿前上部。上界为腹股沟韧带，外侧界为缝匠肌内侧缘，内侧界为长收肌内侧缘。内容（由外侧到内侧）：股神经→股动脉→股静脉→股管。股管位于股静脉内侧，前壁为腹股沟韧带和阔筋膜，后壁为耻骨梳韧带和耻骨肌筋膜，外侧壁为股静脉，内侧壁为腔隙韧带，内含脂肪组织和腹股沟深淋巴结。股管是股疝的好发部位。' },
+            { chapter: '下肢', sub: '收肌管', q: '收肌管的构成及通过结构的位置关系？', a: '由缝匠肌深面、大收肌腱板和股内侧肌围成。通过结构（由前到后）：隐神经→股动脉→股静脉。收肌管下端为收肌腱裂孔，股血管经此进入腘窝。' },
+            { chapter: '下肢', sub: '坐骨神经', q: '坐骨神经在股后区的行程、分支及支配？', a: '经梨状肌下孔出骨盆，在臀大肌深面下行，于股后区沿股二头肌长头与大收肌之间下行。在腘窝上角分为胫神经和腓总神经。胫神经支配小腿后群肌、足底肌；腓总神经支配小腿前群肌、外侧群肌。臀部肌肉注射应避开坐骨神经（在髂后上棘与坐骨结节连线中点外侧）。' },
+            { chapter: '下肢', sub: '腘窝', q: '腘窝的境界、内容及血管神经位置关系？', a: '上内侧界为半腱肌、半膜肌；上外侧界为股二头肌；下内侧界为腓肠肌内侧头；下外侧界为腓肠肌外侧头；顶为腘筋膜；底为股骨腘面、膝关节囊后壁、腘肌。内容（由浅入深）：胫神经→腘静脉→腘动脉。腘动脉为下肢重要供血动脉，可扪及搏动。' },
+            { chapter: '下肢', sub: '小腿筋膜鞘', q: '小腿前、外侧、后骨筋膜鞘的内容？', a: '前鞘：胫骨前肌、趾长伸肌、踇长伸肌、第3腓骨肌。外侧鞘：腓骨长肌、腓骨短肌、腓浅神经。后鞘（浅层）：腓肠肌、比目鱼肌、跖肌；（深层）：腘肌、趾长屈肌、踇长屈肌、胫骨后肌。' },
+            { chapter: '下肢', sub: '胫前胫后血管神经束', q: '胫前血管神经束和胫后血管神经束的构成？', a: '胫前血管神经束：胫前动脉+胫前静脉+腓深神经（走行于胫骨前肌与趾长伸肌之间）。胫后血管神经束：胫后动脉+胫后静脉+胫神经（走行于趾长屈肌与踇长屈肌之间）。' },
+            { chapter: '下肢', sub: '踝管', q: '踝管的构成及通过结构的排列关系？', a: '由屈肌支持带（分裂韧带）与内踝、跟骨围成。通过结构（由前向后）：胫骨后肌腱→趾长屈肌腱→胫后动脉→胫后静脉→胫神经→踇长屈肌腱。口诀：“Tom, Dick, And Very Nervous Harry”。踝管综合征为胫神经在踝管内受压所致。' },
+        ];
+
+        // ================================================================
+        //  2. 精选种子题库（手动编写，共32道，16中+16英）
+        // ================================================================
+        const SEED_QUESTIONS = [
+            { id: 1, chapter: '头部', lang: 'zh', q: '翼点骨折最易损伤的动脉是？', options: ['A. 脑膜中动脉', 'B. 大脑前动脉', 'C. 大脑中动脉', 'D. 颈内动脉'], answer: 0, explanation: '翼点内面有脑膜中动脉通过，骨折可致硬膜外血肿。' },
+            { id: 2, chapter: '头部', lang: 'zh', q: '面神经穿经哪个结构？', options: ['A. 腮腺', 'B. 下颌下腺', 'C. 甲状腺', 'D. 胸腺'], answer: 0, explanation: '面神经穿经腮腺实质。' },
+            { id: 3, chapter: '颈部', lang: 'zh', q: '甲状腺手术中，结扎甲状腺上动脉需紧贴甲状腺上极，以免损伤？', options: ['A. 喉返神经', 'B. 喉上神经外支', 'C. 迷走神经', 'D. 舌下神经'], answer: 1, explanation: '喉上神经外支支配环甲肌，与甲状腺上动脉伴行。' },
+            { id: 4, chapter: '颈部', lang: 'zh', q: '颈动脉三角内，位于颈总动脉分叉处后方的结构是？', options: ['A. 舌下神经', 'B. 迷走神经', 'C. 颈内静脉', 'D. 颈交感干'], answer: 0, explanation: '舌下神经(Ⅻ)在颈动脉三角内位于颈总动脉分叉后方。' },
+            { id: 5, chapter: '胸部', lang: 'zh', q: '胸膜下界在锁骨中线的投影是？', options: ['A. 第6肋', 'B. 第8肋', 'C. 第10肋', 'D. 第12肋'], answer: 1, explanation: '胸膜下界在锁骨中线平第8肋。' },
+            { id: 6, chapter: '胸部', lang: 'zh', q: '后纵隔内不包含哪个结构？', options: ['A. 食管', 'B. 胸主动脉', 'C. 奇静脉', 'D. 心包'], answer: 3, explanation: '心包位于中纵隔。' },
+            { id: 7, chapter: '腹部', lang: 'zh', q: '胆囊三角(Calot三角)内寻找胆囊动脉时，安全的方法是？', options: ['A. 紧贴胆囊壁分离', 'B. 在肝总管前方分离', 'C. 在胆囊管后方分离', 'D. 在肝固有动脉前方分离'], answer: 0, explanation: '胆囊动脉走行于胆囊三角内，紧贴胆囊壁可避免损伤肝总管。' },
+            { id: 8, chapter: '腹部', lang: 'zh', q: '十二指肠悬肌(Treitz韧带)是手术中确认哪个结构的标志？', options: ['A. 空肠起始部', 'B. 回肠起始部', 'C. 十二指肠起始部', 'D. 结肠起始部'], answer: 0, explanation: 'Treitz韧带连于十二指肠空肠曲与膈脚，是空肠起始部的标志。' },
+            { id: 9, chapter: '盆部与会阴', lang: 'zh', q: '子宫动脉在子宫颈外侧约2cm处跨过哪个结构上方？', options: ['A. 输尿管', 'B. 膀胱', 'C. 直肠', 'D. 阴道'], answer: 0, explanation: '子宫动脉跨过输尿管前上方，称为“桥下流水”。' },
+            { id: 10, chapter: '盆部与会阴', lang: 'zh', q: '坐骨肛门窝内最易发生感染的间隙是？', options: ['A. 坐骨肛门窝', 'B. 肛周间隙', 'C. 骨盆直肠间隙', 'D. 直肠后间隙'], answer: 0, explanation: '坐骨肛门窝充满脂肪，是肛周感染最易蔓延的间隙。' },
+            { id: 11, chapter: '上肢', lang: 'zh', q: '肱骨外科颈骨折最易损伤的神经是？', options: ['A. 腋神经', 'B. 桡神经', 'C. 正中神经', 'D. 尺神经'], answer: 0, explanation: '腋神经绕过肱骨外科颈。' },
+            { id: 12, chapter: '上肢', lang: 'zh', q: '腕管综合征压迫的神经是？', options: ['A. 正中神经', 'B. 尺神经', 'C. 桡神经', 'D. 肌皮神经'], answer: 0, explanation: '正中神经在腕管内受压。' },
+            { id: 13, chapter: '下肢', lang: 'zh', q: '臀部肌肉注射应避开坐骨神经，最佳注射部位是？', options: ['A. 髂后上棘与坐骨结节连线中点外侧', 'B. 髂前上棘与坐骨结节连线中点', 'C. 大转子与坐骨结节连线中点', 'D. 髂嵴最高点'], answer: 0, explanation: '坐骨神经在该连线中点外侧走行。' },
+            { id: 14, chapter: '下肢', lang: 'zh', q: '大隐静脉高位结扎术的解剖标志是？', options: ['A. 耻骨结节外下方约3cm处', 'B. 腹股沟韧带中点', 'C. 髂前上棘', 'D. 股动脉搏动点'], answer: 0, explanation: '大隐静脉在耻骨结节外下方约3cm处穿隐静脉裂孔注入股静脉。' },
+            { id: 15, chapter: '下肢', lang: 'zh', q: '踝管综合征是由于哪条神经在踝管内受压？', options: ['A. 胫神经', 'B. 腓总神经', 'C. 腓深神经', 'D. 隐神经'], answer: 0, explanation: '胫神经在踝管内受压。' },
+            { id: 16, chapter: '脊柱区', lang: 'zh', q: '腰上三角(Grynfeltt三角)的上界是？', options: ['A. 第12肋', 'B. 髂嵴', 'C. 竖脊肌外侧缘', 'D. 腹内斜肌后缘'], answer: 0, explanation: '腰上三角上界为第12肋。' },
+        ];
+
+        const SEED_EN = [
+            { id: 101, chapter: 'Head', lang: 'en', q: 'A blow to the pterion is most likely to damage which artery?', options: ['A. Middle meningeal artery', 'B. Anterior cerebral artery', 'C. Middle cerebral artery', 'D. Internal carotid artery'], answer: 0, explanation: 'The middle meningeal artery runs beneath the pterion and is vulnerable to fracture.' },
+            { id: 102, chapter: 'Head', lang: 'en', q: 'Which cranial nerve passes through the parotid gland?', options: ['A. Facial nerve', 'B. Trigeminal nerve', 'C. Glossopharyngeal nerve', 'D. Vagus nerve'], answer: 0, explanation: 'The facial nerve (CN VII) traverses the parotid parenchyma.' },
+            { id: 103, chapter: 'Neck', lang: 'en', q: 'In thyroid surgery, the superior thyroid artery should be ligated close to the upper pole to avoid injury to which nerve?', options: ['A. Recurrent laryngeal nerve', 'B. External branch of superior laryngeal nerve', 'C. Vagus nerve', 'D. Hypoglossal nerve'], answer: 1, explanation: 'The external branch of the superior laryngeal nerve innervates the cricothyroid muscle and runs with the artery.' },
+            { id: 104, chapter: 'Neck', lang: 'en', q: 'In the carotid triangle, which structure lies posterior to the carotid bifurcation?', options: ['A. Hypoglossal nerve', 'B. Vagus nerve', 'C. Internal jugular vein', 'D. Cervical sympathetic trunk'], answer: 0, explanation: 'The hypoglossal nerve (CN XII) passes posterior to the carotid bifurcation.' },
+            { id: 105, chapter: 'Thorax', lang: 'en', q: 'The inferior border of the parietal pleura in the midclavicular line is at which rib?', options: ['A. 6th', 'B. 8th', 'C. 10th', 'D. 12th'], answer: 1, explanation: 'The pleural reflection is at the 8th rib in the midclavicular line.' },
+            { id: 106, chapter: 'Thorax', lang: 'en', q: 'Which of the following is NOT located in the posterior mediastinum?', options: ['A. Esophagus', 'B. Thoracic aorta', 'C. Azygos vein', 'D. Pericardium'], answer: 3, explanation: 'The pericardium is in the middle mediastinum.' },
+            { id: 107, chapter: 'Abdomen', lang: 'en', q: 'During cholecystectomy, the cystic artery is best identified by dissecting close to which structure?', options: ['A. Gallbladder wall', 'B. Common hepatic duct', 'C. Cystic duct', 'D. Proper hepatic artery'], answer: 0, explanation: 'The cystic artery runs in the Calot triangle; dissection close to the gallbladder wall is safest.' },
+            { id: 108, chapter: 'Abdomen', lang: 'en', q: 'The ligament of Treitz is a surgical landmark for the?', options: ['A. Duodenojejunal junction', 'B. Ileocecal junction', 'C. Gastroesophageal junction', 'D. Splenic flexure'], answer: 0, explanation: 'The suspensory muscle of the duodenum attaches to the duodenojejunal flexure.' },
+            { id: 109, chapter: 'Pelvis', lang: 'en', q: 'The uterine artery crosses over which structure at the level of the cervix?', options: ['A. Ureter', 'B. Bladder', 'C. Rectum', 'D. Vagina'], answer: 0, explanation: 'The ureter passes inferior to the uterine artery ("water under the bridge").' },
+            { id: 110, chapter: 'Pelvis', lang: 'en', q: 'Which space is most commonly involved in perianal infection spread?', options: ['A. Ischioanal fossa', 'B. Perianal space', 'C. Pelvirectal space', 'D. Retrorectal space'], answer: 0, explanation: 'The ischioanal fossa is filled with fat and is a common site for infection spread.' },
+            { id: 111, chapter: 'Upper Limb', lang: 'en', q: 'Fracture of the surgical neck of the humerus most likely injures which nerve?', options: ['A. Axillary nerve', 'B. Radial nerve', 'C. Median nerve', 'D. Ulnar nerve'], answer: 0, explanation: 'The axillary nerve winds around the surgical neck.' },
+            { id: 112, chapter: 'Upper Limb', lang: 'en', q: 'Carpal tunnel syndrome involves compression of which nerve?', options: ['A. Median nerve', 'B. Ulnar nerve', 'C. Radial nerve', 'D. Musculocutaneous nerve'], answer: 0, explanation: 'The median nerve is compressed within the carpal tunnel.' },
+            { id: 113, chapter: 'Lower Limb', lang: 'en', q: 'To avoid the sciatic nerve during gluteal injection, the preferred site is?', options: ['A. Lateral to midpoint between PSIS and ischial tuberosity', 'B. Midpoint between ASIS and ischial tuberosity', 'C. Midpoint between greater trochanter and ischial tuberosity', 'D. Highest point of iliac crest'], answer: 0, explanation: 'The sciatic nerve courses lateral to that midpoint.' },
+            { id: 114, chapter: 'Lower Limb', lang: 'en', q: 'The landmark for high ligation of the great saphenous vein is?', options: ['A. 3 cm inferolateral to pubic tubercle', 'B. Midpoint of inguinal ligament', 'C. Anterior superior iliac spine', 'D. Femoral artery pulse'], answer: 0, explanation: 'The saphenous opening is located at that point.' },
+            { id: 115, chapter: 'Lower Limb', lang: 'en', q: 'Tarsal tunnel syndrome is caused by compression of which nerve?', options: ['A. Tibial nerve', 'B. Common peroneal nerve', 'C. Deep peroneal nerve', 'D. Saphenous nerve'], answer: 0, explanation: 'The tibial nerve is compressed in the tarsal tunnel.' },
+            { id: 116, chapter: 'Spine', lang: 'en', q: 'The superior border of the Grynfeltt triangle is formed by?', options: ['A. 12th rib', 'B. Iliac crest', 'C. Lateral border of erector spinae', 'D. Posterior border of internal oblique'], answer: 0, explanation: 'The 12th rib forms the superior border of the superior lumbar triangle.' },
+        ];
+
+        // ================================================================
+        //  3. 应用状态
+        // ================================================================
+        const state = {
+            data: KNOWLEDGE.map((item, idx) => ({ ...item, id: idx, mastered: false })),
+            filtered: [],
+            showMastered: false,
+            searchQuery: '',
+            expandedChapters: new Set(),
+            allQuestions: [],
+            quizFilter: 'all',
+            quizIndex: 0,
+            quizAnswered: false,
+            quizQuestions: [],
+            quizGroupSize: 10,
+            quizGroupIndex: 0,
+            quizFav: new Set(),
+            quizWrong: new Set(),
+            enQuizFilter: 'all',
+            enQuizIndex: 0,
+            enQuizAnswered: false,
+            enQuizQuestions: [],
+            enQuizGroupSize: 10,
+            enQuizGroupIndex: 0,
+            wrongKnowledge: [],
+            reviewShowMode: 'list', // 'list' or 'knowledge'
+        };
+
+        // ================================================================
+        //  4. DOM引用
+        // ================================================================
+        const $ = (id) => document.getElementById(id);
+        const outlineEl = $('outline');
+        const totalNum = $('totalNum');
+        const doneNum = $('doneNum');
+        const pctNum = $('pctNum');
+        const progressFill = $('progressFill');
+        const progressText = $('progressText');
+        const progressPct = $('progressPct');
+        const searchInput = $('searchInput');
+        const chapterJump = $('chapterJump');
+        const showMasteredBtn = $('showMasteredBtn');
+        const expandAllBtn = $('expandAllBtn');
+        const collapseAllBtn = $('collapseAllBtn');
+        const clearSearchBtn = $('clearSearchBtn');
+        const footerTotal = $('footerTotal');
+        const filterInfo = $('filterInfo');
+        const focusToggle = $('focusToggle');
+        const reviewSubControls = $('reviewSubControls');
+        const reviewListBtn = $('reviewListBtn');
+        const reviewKnowledgeBtn = $('reviewKnowledgeBtn');
+        const redoWrongBtn = $('redoWrongBtn');
+
+        // ================================================================
+        //  5. 核心函数
+        // ================================================================
+
+        function getFiltered() {
+            let list = state.data;
+            if (state.showMastered === true) list = list.filter(item => item.mastered);
+            else if (state.showMastered === false) list = list.filter(item => !item.mastered);
+            if (state.searchQuery.trim()) {
+                const q = state.searchQuery.trim().toLowerCase();
+                list = list.filter(item =>
+                    item.q.toLowerCase().includes(q) ||
+                    item.a.toLowerCase().includes(q) ||
+                    item.chapter.includes(q) ||
+                    item.sub.includes(q)
+                );
+            }
+            return list;
+        }
+
+        function updateFiltered() {
+            state.filtered = getFiltered();
+            renderOutline();
+            updateStats();
+            updateJumpOptions();
+            updateFilterInfo();
+            renderReviewList();
+        }
+
+        function updateStats() {
+            const total = state.filtered.length;
+            const done = state.filtered.filter(item => item.mastered).length;
+            const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+            totalNum.textContent = total;
+            doneNum.textContent = done;
+            pctNum.textContent = pct + '%';
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `${done} / ${total} 已掌握`;
+            progressPct.textContent = pct + '%';
+            footerTotal.textContent = total;
+            const allQ = state.allQuestions.length;
+            $('footerQuizCount').textContent = allQ;
+        }
+
+        function updateFilterInfo() {
+            let label = '';
+            if (state.showMastered === true) label = '✅ 已掌握';
+            else if (state.showMastered === false) label = '📖 未掌握';
+            else label = '全部';
+            if (state.searchQuery.trim()) label += ' + 搜索';
+            filterInfo.textContent = label;
+        }
+
+        function updateJumpOptions() {
+            const chapters = [...new Set(state.data.map(d => d.chapter))];
+            const current = chapterJump.value;
+            chapterJump.innerHTML = '<option value="all">📖 全部章节</option>';
+            chapters.forEach(ch => {
+                const opt = document.createElement('option');
+                opt.value = ch;
+                opt.textContent = ch;
+                chapterJump.appendChild(opt);
+            });
+            if (current && chapters.includes(current)) chapterJump.value = current;
+        }
+
+        // ---- 渲染大纲 ----
+        function renderOutline() {
+            const list = state.filtered;
+            if (list.length === 0) {
+                outlineEl.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>没有匹配的知识点</h3><p>尝试调整筛选条件</p></div>`;
+                return;
+            }
+            const chapterMap = new Map();
+            list.forEach(item => {
+                if (!chapterMap.has(item.chapter)) chapterMap.set(item.chapter, []);
+                chapterMap.get(item.chapter).push(item);
+            });
+            const chapterOrder = [...new Set(state.data.map(d => d.chapter))];
+            const sortedChapters = chapterOrder.filter(ch => chapterMap.has(ch));
+            let html = '';
+            let globalIdx = 0;
+            sortedChapters.forEach((chapterName) => {
+                const items = chapterMap.get(chapterName);
+                const subMap = new Map();
+                items.forEach(item => {
+                    if (!subMap.has(item.sub)) subMap.set(item.sub, []);
+                    subMap.get(item.sub).push(item);
+                });
+                const subOrder = [...new Set(items.map(i => i.sub))];
+                const totalInChapter = items.length;
+                const doneInChapter = items.filter(i => i.mastered).length;
+                const isExpanded = state.expandedChapters.has(chapterName) || state.expandedChapters.size === 0;
+                html += `
+                    <div class="chapter" data-chapter="${chapterName}">
+                        <div class="chapter-header" data-chapter="${chapterName}">
+                            <div class="title">
+                                ${chapterName}
+                                <span class="badge">${totalInChapter} 条</span>
+                                ${doneInChapter > 0 ? `<span class="badge done-badge">✅ ${doneInChapter}/${totalInChapter}</span>` : ''}
+                            </div>
+                            <span class="toggle-icon ${isExpanded ? 'open' : ''}">▾</span>
+                        </div>
+                        <div class="chapter-body ${isExpanded ? '' : 'collapsed'}">
+                `;
+                subOrder.forEach(subName => {
+                    const subItems = subMap.get(subName);
+                    html += `
+                        <div class="subchapter">
+                            <div class="subchapter-title">${subName} <span class="sub-badge">${subItems.length}</span></div>
+                    `;
+                    subItems.forEach((item) => {
+                        const isMastered = item.mastered;
+                        const qText = highlightText(item.q, state.searchQuery.trim());
+                        const aText = highlightText(item.a, state.searchQuery.trim());
+                        const hasStar = item.q.includes('★') || item.a.includes('★');
+                        html += `
+                            <div class="knowledge-item ${isMastered ? 'mastered' : ''}" data-id="${item.id}">
+                                <span class="marker ${isMastered ? 'done' : ''}" data-id="${item.id}" title="点击标记掌握"></span>
+                                <div class="content">
+                                    <div class="q">${hasStar ? '<span class="star">★</span>' : ''}${qText}</div>
+                                    <div class="a">${aText}</div>
+                                </div>
+                                <span class="item-index">#${++globalIdx}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                });
+                html += `</div></div>`;
+            });
+            outlineEl.innerHTML = html;
+            // 事件绑定（与原版相同，省略）
+            document.querySelectorAll('.chapter-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    const ch = this.dataset.chapter;
+                    const body = this.nextElementSibling;
+                    const icon = this.querySelector('.toggle-icon');
+                    if (body.classList.contains('collapsed')) {
+                        body.classList.remove('collapsed');
+                        icon.classList.add('open');
+                        state.expandedChapters.add(ch);
+                    } else {
+                        body.classList.add('collapsed');
+                        icon.classList.remove('open');
+                        state.expandedChapters.delete(ch);
+                    }
+                });
+            });
+            document.querySelectorAll('.marker').forEach(marker => {
+                marker.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = parseInt(this.dataset.id);
+                    const item = state.data.find(d => d.id === id);
+                    if (item) {
+                        item.mastered = !item.mastered;
+                        saveStorage();
+                        updateFiltered();
+                    }
+                });
+            });
+            document.querySelectorAll('.knowledge-item .content').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const marker = this.closest('.knowledge-item').querySelector('.marker');
+                    if (marker) marker.click();
+                });
+            });
+        }
+
+        function highlightText(text, query) {
+            if (!query || query.length < 1) return text;
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escaped})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        // ---- 构建题库（仅种子+扩展坞） ----
+        function buildFullQuiz() {
+            let all = [];
+            let zh = SEED_QUESTIONS.slice();
+            let en = SEED_EN.slice();
+            all = zh.concat(en);
+            all.forEach((q, i) => q.id = i + 1);
+            state.allQuestions = all;
+            loadExtensionQuestions();
+        }
+
+        // ---- 扩展题库持久化 ----
+        function loadExtensionQuestions() {
+            try {
+                const ext = localStorage.getItem('extensionQuestions');
+                if (ext) {
+                    const parsed = JSON.parse(ext);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        const existingIds = new Set(state.allQuestions.map(q => q.id));
+                        let maxId = Math.max(...state.allQuestions.map(q => q.id), 0);
+                        parsed.forEach(q => {
+                            if (!existingIds.has(q.id)) {
+                                q.id = ++maxId;
+                                state.allQuestions.push(q);
+                                existingIds.add(q.id);
+                            }
+                        });
+                        saveExtensionQuestions();
+                    }
+                }
+            } catch (e) { console.warn('加载扩展题库失败', e); }
+        }
+
+        function saveExtensionQuestions() {
+            const ext = state.allQuestions.filter(q => q.id > 200);
+            try {
+                localStorage.setItem('extensionQuestions', JSON.stringify(ext));
+            } catch (e) { console.warn('保存扩展题库失败', e); }
+        }
+
+        // ---- 存储收藏/错题/掌握 ----
+        function loadStorage() {
+            try {
+                const fav = localStorage.getItem('quizFav');
+                if (fav) state.quizFav = new Set(JSON.parse(fav));
+                const wrong = localStorage.getItem('quizWrong');
+                if (wrong) state.quizWrong = new Set(JSON.parse(wrong));
+                const mastered = localStorage.getItem('masteredIds');
+                if (mastered) {
+                    const ids = new Set(JSON.parse(mastered));
+                    state.data.forEach(item => {
+                        if (ids.has(item.id)) item.mastered = true;
+                    });
+                }
+            } catch (e) { console.warn('Storage load error', e); }
+        }
+
+        function saveStorage() {
+            try {
+                localStorage.setItem('quizFav', JSON.stringify([...state.quizFav]));
+                localStorage.setItem('quizWrong', JSON.stringify([...state.quizWrong]));
+                const masteredIds = state.data.filter(d => d.mastered).map(d => d.id);
+                localStorage.setItem('masteredIds', JSON.stringify(masteredIds));
+                saveExtensionQuestions();
+            } catch (e) { console.warn('Storage save error', e); }
+        }
+
+        // ---- 做题模块 ----
+        function buildQuizList(filterType, isEn) {
+            let pool = state.allQuestions.filter(q => q.lang === (isEn ? 'en' : 'zh'));
+            if (filterType === 'fav') {
+                pool = pool.filter(q => state.quizFav.has(q.id));
+            } else if (filterType === 'wrong') {
+                pool = pool.filter(q => state.quizWrong.has(q.id));
+            }
+            return pool;
+        }
+
+        function renderQuizCard(isEn) {
+            const container = isEn ? 'enQuizCardArea' : 'quizCardArea';
+            const progressId = isEn ? 'enQuizProgress' : 'quizProgress';
+            const groupLabelId = isEn ? 'enQuizGroupLabel' : 'quizGroupLabel';
+            const list = isEn ? state.enQuizQuestions : state.quizQuestions;
+            const idx = isEn ? state.enQuizIndex : state.quizIndex;
+            const groupIdx = isEn ? state.enQuizGroupIndex : state.quizGroupIndex;
+            const groupSize = isEn ? state.enQuizGroupSize : state.quizGroupSize;
+            const area = $(container);
+            if (!area) return;
+            if (list.length === 0) {
+                area.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>${isEn ? 'No questions' : '暂无题目'}</h3><p>${isEn ? 'Try changing filter' : '尝试切换筛选条件'}</p></div>`;
+                $(progressId).textContent = `0 / 0`;
+                $(groupLabelId).textContent = '0';
+                return;
+            }
+            const totalGroups = Math.ceil(list.length / groupSize);
+            const start = groupIdx * groupSize;
+            const end = Math.min(start + groupSize, list.length);
+            const groupQuestions = list.slice(start, end);
+            const groupTotal = groupQuestions.length;
+            if (groupTotal === 0 || idx >= groupTotal) {
+                if (groupIdx < totalGroups - 1) {
+                    if (isEn) state.enQuizGroupIndex++;
+                    else state.quizGroupIndex++;
+                    renderQuizCard(isEn);
+                    return;
+                } else {
+                    area.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><h3>${isEn ? 'All groups completed!' : '全部组完成！'}</h3></div>`;
+                    $(progressId).textContent = `${end} / ${list.length}`;
+                    $(groupLabelId).textContent = totalGroups;
+                    return;
+                }
+            }
+            const q = groupQuestions[idx];
+            if (!q) {
+                area.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><h3>${isEn ? 'All done!' : '全部完成！'}</h3></div>`;
+                $(progressId).textContent = `${end} / ${list.length}`;
+                $(groupLabelId).textContent = `${groupIdx+1}/${totalGroups}`;
+                return;
+            }
+            const total = list.length;
+            $(progressId).textContent = `${end} / ${total}`;
+            $(groupLabelId).textContent = `${groupIdx+1}/${totalGroups}`;
+            const isAnswered = isEn ? state.enQuizAnswered : state.quizAnswered;
+            const selectedOpt = isEn ? q._selected : q._selected;
+            const isFav = state.quizFav.has(q.id);
+            const isWrong = state.quizWrong.has(q.id);
+
+            let html = `
+                <div class="quiz-card">
+                    <div class="q-tag">${q.chapter} ${isEn ? '· USMLE' : '· 中文'} ${isFav ? '⭐' : ''} ${isWrong ? '❌' : ''}</div>
+                    <div class="q-text ${isEn ? 'en' : ''}">${q.q}</div>
+                    <div class="options">
+            `;
+            const labels = isEn ? ['A','B','C','D'] : ['A','B','C','D'];
+            q.options.forEach((opt, i) => {
+                let cls = '', disabled = '', checked = '';
+                if (isAnswered) {
+                    if (i === q.answer) cls = 'correct';
+                    else if (selectedOpt === i && i !== q.answer) cls = 'wrong';
+                    disabled = 'disabled';
+                } else if (selectedOpt === i) {
+                    cls = 'selected';
+                    checked = 'checked';
+                }
+                html += `<label class="${cls}" data-opt="${i}"><input type="radio" name="quiz_opt" value="${i}" ${checked} ${disabled} /><span>${labels[i]}. ${opt}</span></label>`;
+            });
+            html += `</div>`;
+            if (isAnswered) {
+                const isCorrect = selectedOpt === q.answer;
+                html += `<div class="feedback show ${isCorrect ? 'correct' : 'wrong'}">${isCorrect ? '✅ 正确！' : '❌ 错误。正确答案是 ' + labels[q.answer]}<div class="exp">${q.explanation || ''}</div></div>`;
+            }
+            html += `
+                </div>
+                <div class="quiz-nav">
+                    <div class="btn-group">
+                        <button class="btn outline" id="${isEn ? 'enPrevQ' : 'prevQ'}">◀ 上一题</button>
+                        <button class="btn outline" id="${isEn ? 'enNextQ' : 'nextQ'}">下一题 ▶</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn ${isFav ? 'gold active' : 'outline'}" id="${isEn ? 'enFavQ' : 'favQ'}">⭐ ${isFav ? '已收藏' : '收藏'}</button>
+                        <button class="btn primary-solid" id="${isEn ? 'enSubmitQ' : 'submitQ'}">${isAnswered ? '下一题' : '提交答案'}</button>
+                    </div>
+                </div>
+            `;
+            area.innerHTML = html;
+
+            area.querySelectorAll('.options label').forEach(label => {
+                label.addEventListener('click', function(e) {
+                    if (isAnswered) return;
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true;
+                    const idx2 = parseInt(this.dataset.opt);
+                    if (isEn) {
+                        state.enQuizQuestions[state.enQuizIndex + state.enQuizGroupIndex * state.enQuizGroupSize]._selected = idx2;
+                    } else {
+                        state.quizQuestions[state.quizIndex + state.quizGroupIndex * state.quizGroupSize]._selected = idx2;
+                    }
+                    renderQuizCard(isEn);
+                });
+            });
+
+            const submitBtn = $(isEn ? 'enSubmitQ' : 'submitQ');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    if (isAnswered) {
+                        if (isEn) {
+                            if (state.enQuizIndex < groupQuestions.length - 1) {
+                                state.enQuizIndex++;
+                                state.enQuizAnswered = false;
+                            } else {
+                                if (state.enQuizGroupIndex < totalGroups - 1) {
+                                    state.enQuizGroupIndex++;
+                                    state.enQuizIndex = 0;
+                                    state.enQuizAnswered = false;
+                                    renderQuizCard(true);
+                                    return;
+                                } else {
+                                    showKnowledgeCard(isEn);
+                                    return;
+                                }
+                            }
+                        } else {
+                            if (state.quizIndex < groupQuestions.length - 1) {
+                                state.quizIndex++;
+                                state.quizAnswered = false;
+                            } else {
+                                if (state.quizGroupIndex < totalGroups - 1) {
+                                    state.quizGroupIndex++;
+                                    state.quizIndex = 0;
+                                    state.quizAnswered = false;
+                                    renderQuizCard(false);
+                                    return;
+                                } else {
+                                    showKnowledgeCard(isEn);
+                                    return;
+                                }
+                            }
+                        }
+                        renderQuizCard(isEn);
+                        return;
+                    }
+                    const qData = (isEn ? state.enQuizQuestions : state.quizQuestions)[
+                        (isEn ? state.enQuizIndex : state.quizIndex) + (isEn ? state.enQuizGroupIndex : state.quizGroupIndex) * (isEn ? state.enQuizGroupSize : state.quizGroupSize)
+                    ];
+                    const selected = qData._selected;
+                    if (selected === undefined || selected === null) {
+                        alert(isEn ? 'Please select an option' : '请选择一个选项');
+                        return;
+                    }
+                    const isCorrect = selected === qData.answer;
+                    if (!isCorrect) {
+                        state.quizWrong.add(qData.id);
+                        const chapter = qData.chapter;
+                        const relatedKnowledge = state.data.filter(k => k.chapter === chapter);
+                        state.wrongKnowledge.push(...relatedKnowledge);
+                        saveStorage();
+                    }
+                    if (isEn) state.enQuizAnswered = true;
+                    else state.quizAnswered = true;
+                    renderQuizCard(isEn);
+                });
+            }
+
+            const prevBtn = $(isEn ? 'enPrevQ' : 'prevQ');
+            const nextBtn = $(isEn ? 'enNextQ' : 'nextQ');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    if (isEn) {
+                        if (state.enQuizIndex > 0) { state.enQuizIndex--; state.enQuizAnswered = false; }
+                        else if (state.enQuizGroupIndex > 0) { state.enQuizGroupIndex--; state.enQuizIndex = groupSize - 1; state.enQuizAnswered = false; }
+                    } else {
+                        if (state.quizIndex > 0) { state.quizIndex--; state.quizAnswered = false; }
+                        else if (state.quizGroupIndex > 0) { state.quizGroupIndex--; state.quizIndex = groupSize - 1; state.quizAnswered = false; }
+                    }
+                    renderQuizCard(isEn);
+                });
+            }
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    if (isEn) {
+                        if (state.enQuizIndex < groupQuestions.length - 1) { state.enQuizIndex++; state.enQuizAnswered = false; }
+                        else if (state.enQuizGroupIndex < totalGroups - 1) { state.enQuizGroupIndex++; state.enQuizIndex = 0; state.enQuizAnswered = false; }
+                    } else {
+                        if (state.quizIndex < groupQuestions.length - 1) { state.quizIndex++; state.quizAnswered = false; }
+                        else if (state.quizGroupIndex < totalGroups - 1) { state.quizGroupIndex++; state.quizIndex = 0; state.quizAnswered = false; }
+                    }
+                    renderQuizCard(isEn);
+                });
+            }
+
+            const favBtn = $(isEn ? 'enFavQ' : 'favQ');
+            if (favBtn) {
+                favBtn.addEventListener('click', function() {
+                    const id = qData.id;
+                    if (state.quizFav.has(id)) state.quizFav.delete(id);
+                    else state.quizFav.add(id);
+                    saveStorage();
+                    renderQuizCard(isEn);
+                });
+            }
+
+            const handleKey = (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === ' ' || e.key === 'Space') { e.preventDefault(); if (submitBtn) submitBtn.click(); }
+                if (e.key === 'ArrowLeft') { if (prevBtn) prevBtn.click(); }
+                if (e.key === 'ArrowRight') { if (nextBtn) nextBtn.click(); }
+            };
+            document.removeEventListener('keydown', window._quizKeyHandler);
+            window._quizKeyHandler = handleKey;
+            document.addEventListener('keydown', handleKey);
+        }
+
+        // ---- 错题知识点卡片（保留） ----
+        function showKnowledgeCard(isEn) {
+            const overlay = $('knowledgeOverlay');
+            const content = $('knowledgeContent');
+            const unique = [];
+            const seen = new Set();
+            state.wrongKnowledge.forEach(k => {
+                if (!seen.has(k.id)) { seen.add(k.id); unique.push(k); }
+            });
+            if (unique.length === 0) {
+                content.innerHTML = `<div class="empty-msg">🎉 没有错题知识点需要复习！</div>`;
+            } else {
+                let html = '';
+                unique.forEach((k, i) => {
+                    html += `<div class="knowledge-item"><div class="q">${i+1}. ${k.q}</div><div class="a">${k.a}</div></div>`;
+                });
+                content.innerHTML = html;
+            }
+            overlay.classList.add('show');
+        }
+        $('knowledgeClose').addEventListener('click', function() { $('knowledgeOverlay').classList.remove('show'); });
+        $('knowledgeOverlay').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+
+        // ---- 收藏 & 错题列表（含知识点视图） ----
+        function renderReviewList() {
+            const container = $('reviewList');
+            const activeTab = document.querySelector('.review-tabs .rtab.active');
+            const type = activeTab ? activeTab.dataset.rtype : 'fav';
+            // 控制子控件显示
+            if (type === 'wrong') {
+                reviewSubControls.classList.add('show');
+            } else {
+                reviewSubControls.classList.remove('show');
+            }
+
+            let list = [];
+            if (type === 'fav') {
+                list = state.allQuestions.filter(q => state.quizFav.has(q.id));
+            } else if (type === 'wrong') {
+                // 错题列表或知识点
+                if (state.reviewShowMode === 'list') {
+                    list = state.allQuestions.filter(q => state.quizWrong.has(q.id));
+                } else {
+                    // 知识点模式
+                    const wrongQuestions = state.allQuestions.filter(q => state.quizWrong.has(q.id));
+                    const chapters = new Set(wrongQuestions.map(q => q.chapter));
+                    let knowledgeList = state.data.filter(k => chapters.has(k.chapter));
+                    const seenIds = new Set();
+                    knowledgeList = knowledgeList.filter(k => {
+                        if (seenIds.has(k.id)) return false;
+                        seenIds.add(k.id);
+                        return true;
+                    });
+                    // 渲染知识点
+                    if (knowledgeList.length === 0) {
+                        container.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>暂无相关知识点</h3></div>`;
+                    } else {
+                        let html = '';
+                        knowledgeList.forEach((k, i) => {
+                            html += `
+                                <div class="knowledge-item" style="border-left-color:var(--red);">
+                                    <span class="marker" style="cursor:default;background:var(--red);color:#fff;border-color:var(--red);">📘</span>
+                                    <div class="content">
+                                        <div class="q">${k.q}</div>
+                                        <div class="a">${k.a}</div>
+                                    </div>
+                                    <span class="item-index">#${i+1}</span>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    }
+                    return;
+                }
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>暂无内容</h3></div>`;
+                return;
+            }
+            let html = '';
+            list.forEach((item, i) => {
+                const labels = ['A','B','C','D'];
+                const isFav = state.quizFav.has(item.id);
+                const isWrong = state.quizWrong.has(item.id);
+                html += `
+                    <div class="knowledge-item" style="border-left-color:${isWrong ? 'var(--red)' : isFav ? 'var(--gold)' : 'var(--primary)'};">
+                        <span class="marker" style="cursor:default;background:${isWrong ? 'var(--red)' : isFav ? 'var(--gold)' : 'var(--primary)'};color:#fff;border-color:${isWrong ? 'var(--red)' : isFav ? 'var(--gold)' : 'var(--primary)'};">${isWrong ? '✗' : isFav ? '⭐' : '📌'}</span>
+                        <div class="content">
+                            <div class="q">${item.q}</div>
+                            <div class="a">✅ ${labels[item.answer]}. ${item.options[item.answer]}</div>
+                            <div class="a" style="font-size:0.8rem;color:var(--text-light);">${item.explanation || ''}</div>
+                        </div>
+                        <span class="item-index">#${i+1}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ---- 扩展坞功能（与原版相同） ----
+        function initExtension() {
+            const uploadZone = $('uploadZone');
+            const fileInput = $('fileInput');
+            const status = $('uploadStatus');
+            uploadZone.addEventListener('click', () => fileInput.click());
+            uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+            uploadZone.addEventListener('dragleave', () => { uploadZone.classList.remove('dragover'); });
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) { handleFile(e.target.files[0]); fileInput.value = ''; }
+            });
+
+            function handleFile(file) {
+                if (!file.name.endsWith('.txt')) {
+                    status.innerHTML = `<span style="color:var(--red);">❌ 请上传 .txt 文件</span>`;
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const parsed = parseTxtQuestions(content);
+                    if (parsed.length === 0) {
+                        status.innerHTML = `<span style="color:var(--red);">❌ 解析失败，请检查格式（需包含 "### 题目：" 等标记）</span>`;
+                        return;
+                    }
+                    let added = 0;
+                    let maxId = Math.max(...state.allQuestions.map(q => q.id), 0);
+                    parsed.forEach(q => {
+                        const exists = state.allQuestions.some(ex => ex.q === q.q && ex.lang === q.lang);
+                        if (!exists) {
+                            q.id = ++maxId;
+                            state.allQuestions.push(q);
+                            added++;
+                        }
+                    });
+                    if (added === 0) {
+                        status.innerHTML = `<span style="color:var(--gold);">⚠️ 所有题目已存在，未新增</span>`;
+                    } else {
+                        saveExtensionQuestions();
+                        status.innerHTML = `<span style="color:var(--green);">✅ 成功导入 ${added} 道题目！</span>`;
+                        updateStats();
+                        if (document.querySelector('.tab-btn[data-tab="quiz"]').classList.contains('active')) {
+                            state.quizQuestions = buildQuizList(state.quizFilter, false);
+                            state.quizIndex = 0; state.quizAnswered = false; state.quizGroupIndex = 0;
+                            renderQuizCard(false);
+                        }
+                        if (document.querySelector('.tab-btn[data-tab="enquiz"]').classList.contains('active')) {
+                            state.enQuizQuestions = buildQuizList(state.enQuizFilter, true);
+                            state.enQuizIndex = 0; state.enQuizAnswered = false; state.enQuizGroupIndex = 0;
+                            renderQuizCard(true);
+                        }
+                        renderReviewList();
+                    }
+                };
+                reader.onerror = function() { status.innerHTML = `<span style="color:var(--red);">❌ 读取文件失败</span>`; };
+                reader.readAsText(file, 'UTF-8');
+            }
+
+            function parseTxtQuestions(text) {
+                const lines = text.split(/\r?\n/);
+                const questions = [];
+                let current = null, options = [], answer = -1, explanation = '', chapter = '未知章节', lang = 'zh';
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i].trim();
+                    if (!line) continue;
+                    if (line.startsWith('### 题目：') || line.startsWith('### 题目：')) {
+                        if (current && options.length === 4 && answer >= 0) {
+                            questions.push({ id:0, chapter, lang, q: current, options, answer, explanation: explanation || '无解析' });
+                        }
+                        current = line.replace(/^###\s*题目[：:]\s*/, '').trim();
+                        options = []; answer = -1; explanation = '';
+                        lang = /[\u4e00-\u9fa5]/.test(current) ? 'zh' : 'en';
+                        const chapterKeywords = ['头部','颈部','胸部','腹部','盆部','脊柱','上肢','下肢','Head','Neck','Thorax','Abdomen','Pelvis','Spine','Upper','Lower'];
+                        for (let kw of chapterKeywords) { if (current.includes(kw)) { chapter = kw; break; } }
+                        continue;
+                    }
+                    const optMatch = line.match(/^([A-D])\.\s*(.*)/);
+                    if (optMatch) { options.push(optMatch[1] + '. ' + optMatch[2]); continue; }
+                    const ansMatch = line.match(/^答案[：:]\s*([A-D])/);
+                    if (ansMatch) { answer = ansMatch[1].charCodeAt(0) - 65; continue; }
+                    const expMatch = line.match(/^解析[：:]\s*(.*)/);
+                    if (expMatch) { explanation = expMatch[1]; continue; }
+                    if (line.startsWith('---')) continue;
+                    if (current !== null) current += ' ' + line;
+                }
+                if (current && options.length === 4 && answer >= 0) {
+                    questions.push({ id:0, chapter, lang, q: current, options, answer, explanation: explanation || '无解析' });
+                }
+                return questions;
+            }
+        }
+
+        // ================================================================
+        //  6. 事件绑定
+        // ================================================================
+
+        // ---- Tabs ----
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                const pane = document.getElementById('pane-' + tab);
+                if (pane) pane.classList.add('active');
+                if (tab === 'quiz') {
+                    state.quizQuestions = buildQuizList(state.quizFilter, false);
+                    state.quizIndex = 0; state.quizAnswered = false; state.quizGroupIndex = 0;
+                    renderQuizCard(false);
+                } else if (tab === 'enquiz') {
+                    state.enQuizQuestions = buildQuizList(state.enQuizFilter, true);
+                    state.enQuizIndex = 0; state.enQuizAnswered = false; state.enQuizGroupIndex = 0;
+                    renderQuizCard(true);
+                } else if (tab === 'review') {
+                    renderReviewList();
+                } else if (tab === 'outline') {
+                    // 已渲染
+                } else if (tab === 'extension') {
+                    // 无需额外操作
+                }
+            });
+        });
+
+        // ---- 搜索 ----
+        searchInput.addEventListener('input', function() {
+            state.searchQuery = this.value;
+            updateFiltered();
+        });
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            state.searchQuery = '';
+            updateFiltered();
+            searchInput.focus();
+        });
+
+        // ---- 已掌握切换 ----
+        showMasteredBtn.addEventListener('click', function() {
+            if (state.showMastered === false) { state.showMastered = true; this.textContent = '✅ 全部'; this.classList.add('active'); }
+            else if (state.showMastered === true) { state.showMastered = null; this.textContent = '📖 未掌握'; this.classList.remove('active'); }
+            else { state.showMastered = false; this.textContent = '✅ 已掌握'; this.classList.add('active'); }
+            if (state.showMastered === null) { this.textContent = '📖 全部'; this.classList.remove('active'); }
+            updateFiltered();
+        });
+        state.showMastered = false;
+        showMasteredBtn.textContent = '📖 未掌握';
+        showMasteredBtn.classList.add('active');
+
+        // ---- 展开/折叠 ----
+        expandAllBtn.addEventListener('click', function() {
+            document.querySelectorAll('.chapter-body').forEach(el => el.classList.remove('collapsed'));
+            document.querySelectorAll('.toggle-icon').forEach(el => el.classList.add('open'));
+            const chapters = [...new Set(state.data.map(d => d.chapter))];
+            chapters.forEach(ch => state.expandedChapters.add(ch));
+        });
+        collapseAllBtn.addEventListener('click', function() {
+            document.querySelectorAll('.chapter-body').forEach(el => el.classList.add('collapsed'));
+            document.querySelectorAll('.toggle-icon').forEach(el => el.classList.remove('open'));
+            state.expandedChapters.clear();
+        });
+
+        // ---- 章节跳转 ----
+        chapterJump.addEventListener('change', function() {
+            const val = this.value;
+            if (val === 'all') { window.scrollTo({ top:0, behavior:'smooth' }); return; }
+            const el = document.querySelector(`.chapter[data-chapter="${val}"]`);
+            if (el) {
+                el.scrollIntoView({ behavior:'smooth', block:'start' });
+                const body = el.querySelector('.chapter-body');
+                const icon = el.querySelector('.toggle-icon');
+                if (body && body.classList.contains('collapsed')) {
+                    body.classList.remove('collapsed');
+                    icon.classList.add('open');
+                    state.expandedChapters.add(val);
+                }
+            }
+        });
+
+        // ---- 专注模式 ----
+        focusToggle.addEventListener('click', function() {
+            document.body.classList.toggle('focus-mode');
+            this.textContent = document.body.classList.contains('focus-mode') ? '☀️' : '🌙';
+        });
+
+        // ---- 做题过滤器 ----
+        document.querySelectorAll('#quizFilterAll, #quizFilterFav, #quizFilterWrong').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#quizFilterAll, #quizFilterFav, #quizFilterWrong').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const val = this.id === 'quizFilterAll' ? 'all' : this.id === 'quizFilterFav' ? 'fav' : 'wrong';
+                state.quizFilter = val;
+                state.quizQuestions = buildQuizList(val, false);
+                state.quizIndex = 0; state.quizAnswered = false; state.quizGroupIndex = 0;
+                renderQuizCard(false);
+                document.querySelector('.tab-btn[data-tab="quiz"]').click();
+            });
+        });
+        document.querySelector('#quizFilterAll').classList.add('active');
+
+        document.querySelectorAll('#enQuizFilterAll, #enQuizFilterFav, #enQuizFilterWrong').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#enQuizFilterAll, #enQuizFilterFav, #enQuizFilterWrong').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const val = this.id === 'enQuizFilterAll' ? 'all' : this.id === 'enQuizFilterFav' ? 'fav' : 'wrong';
+                state.enQuizFilter = val;
+                state.enQuizQuestions = buildQuizList(val, true);
+                state.enQuizIndex = 0; state.enQuizAnswered = false; state.enQuizGroupIndex = 0;
+                renderQuizCard(true);
+                document.querySelector('.tab-btn[data-tab="enquiz"]').click();
+            });
+        });
+        document.querySelector('#enQuizFilterAll').classList.add('active');
+
+        // ---- 收藏/错题独立标签 ----
+        document.querySelectorAll('.review-tabs .rtab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.review-tabs .rtab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // 切换标签时重置视图模式为列表
+                if (this.dataset.rtype === 'wrong') {
+                    state.reviewShowMode = 'list';
+                }
+                renderReviewList();
+            });
+        });
+
+        // ---- 错题子控制 ----
+        reviewListBtn.addEventListener('click', function() {
+            state.reviewShowMode = 'list';
+            renderReviewList();
+        });
+        reviewKnowledgeBtn.addEventListener('click', function() {
+            state.reviewShowMode = 'knowledge';
+            renderReviewList();
+        });
+
+        // ---- 重做错题 ----
+        redoWrongBtn.addEventListener('click', function() {
+            // 设置过滤为错题
+            state.quizFilter = 'wrong';
+            state.quizQuestions = buildQuizList('wrong', false);
+            state.quizIndex = 0;
+            state.quizAnswered = false;
+            state.quizGroupIndex = 0;
+            // 切换到中文做题tab
+            document.querySelector('.tab-btn[data-tab="quiz"]').click();
+            // 刷新做题界面
+            renderQuizCard(false);
+        });
+
+        // ---- 键盘快捷键 ----
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+            if (e.key === 'm' || e.key === 'M') { e.preventDefault(); showMasteredBtn.click(); }
+            if (e.key === 'f' || e.key === 'F') {
+                if (e.ctrlKey || e.metaKey) return;
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+            if (e.key === 'Escape') { searchInput.blur(); }
+        });
+
+        // ================================================================
+        //  7. 启动
+        // ================================================================
+
+        buildFullQuiz();
+        loadStorage();
+
+        const allChapters = [...new Set(state.data.map(d => d.chapter))];
+        allChapters.forEach(ch => state.expandedChapters.add(ch));
+
+        updateFiltered();
+
+        state.quizQuestions = buildQuizList('all', false);
+        state.quizIndex = 0; state.quizAnswered = false; state.quizGroupIndex = 0;
+        state.enQuizQuestions = buildQuizList('all', true);
+        state.enQuizIndex = 0; state.enQuizAnswered = false; state.enQuizGroupIndex = 0;
+
+        renderQuizCard(false);
+        renderQuizCard(true);
+        renderReviewList();
+
+        initExtension();
+
+        console.log('📖 局解·极细大纲 + 精选32道题库 + 扩展坞已加载');
+        console.log(`📚 知识点: ${KNOWLEDGE.length} 条, 题库: ${state.allQuestions.length} 道`);
+        console.log('💡 快捷键: 空格=提交/下一题, ←/→=切换, M=过滤, F=搜索');
+        console.log('💡 错题界面新增“错题知识点”与“重做错题”功能');
+    </script>
+</body>
+</html>

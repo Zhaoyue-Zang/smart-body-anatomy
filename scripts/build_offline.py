@@ -5,13 +5,13 @@ root=Path(__file__).resolve().parents[1]
 h=(root/'index.html').read_text(encoding='utf8')
 for name in ['experience.css']:
     h=h.replace(f'<link rel="stylesheet" href="{name}">','<style>'+ (root/name).read_text(encoding='utf8')+'</style>')
-for name in ['assets/vendor/gsap.min.js','app.js','experience.js']:
+for name in ['assets/vendor/gsap.min.js','assets/regional-data.js','app.js','learning-tools.js','experience.js']:
     code=(root/name).read_text(encoding='utf8').replace('</script','<\\/script')
     if name=='app.js':
-        for kind in ['heart','skeleton']:
-            data=base64.b64encode((root/f'assets/models/{kind}-poster.png').read_bytes()).decode()
-            code=code.replace("const galleryModels=[",f"const {kind}Poster='data:image/png;base64,{data}';\nconst galleryModels=[",1)
-        code=code.replace('assets/models/${s.id}-poster.png','${s.id===\'heart\'?heartPoster:skeletonPoster}')
+        posters={p.name.replace('-poster.png',''):'data:image/png;base64,'+base64.b64encode(p.read_bytes()).decode() for p in (root/'assets/models').glob('*-poster.png')}
+        import json
+        code='const offlinePosters='+json.dumps(posters)+';\n'+code
+        code=code.replace('assets/models/${s.id}-poster.png','${offlinePosters[s.id]}')
     h=h.replace(f'<script src="{name}" defer></script>','<script>'+code+'</script>')
 def embed(m):
     path=root/m[1]

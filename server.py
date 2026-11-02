@@ -63,7 +63,7 @@ def index():
 @app.get('/<path:filename>')
 def static_files(filename):
     # Flask's send_from_directory uses safe_join; only allow delivered web assets.
-    if filename in ('app.js','index.html','studio.html','studio.css','studio.js','experience.css','experience.js') or filename.startswith('assets/'):
+    if filename in ('app.js','index.html','studio.html','studio.css','studio.js','experience.css','experience.js','learning-tools.js') or filename.startswith('assets/'):
         return send_from_directory(APP_DIR,filename)
     return error('Not found',404)
 

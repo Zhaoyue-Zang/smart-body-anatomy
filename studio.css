@@ -6,4 +6,6 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* Expanded collection remains browsable without stretching the viewport. */
-@media(min-width:1101px){.model-collection{max-height:calc(100svh - 420px);min-height:290px;overflow-y:auto;overscroll-behavior:contain;padding-right:6px;scrollbar-width:thin;scrollbar-color:#786747 #11191c}.model-card{flex-shrink:0}.viewport-panel,.inspector-panel{align-self:start}.viewport-panel{position:sticky;top:0}}
+@media(min-width:801px){.model-collection{max-height:calc(100svh - 420px);min-height:290px;overflow-y:auto;overscroll-behavior:contain;padding-right:6px;scrollbar-width:thin;scrollbar-color:#786747 #11191c}.model-card{flex-shrink:0}.viewport-panel,.inspector-panel{align-self:start}.viewport-panel{position:sticky;top:0}}
+
+@media(max-width:800px){.model-collection{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:210px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}.model-card{scroll-snap-align:start}.viewport-bottom{flex-wrap:wrap}.view-presets{flex-wrap:wrap}.viewport-heading h2 em{display:block;margin:8px 0 0}}

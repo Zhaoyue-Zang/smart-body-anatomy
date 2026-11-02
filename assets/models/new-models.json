@@ -1,0 +1,42 @@
+[
+  {
+    "id": "lungs",
+    "title": "肺叶",
+    "latin": "Pulmones",
+    "en": "LUNG LOBES",
+    "system": "呼吸系统",
+    "intro": "逐叶选取左右肺的五个肺叶，观察肺裂与空间轮廓；不含支气管树和血管。"
+  },
+  {
+    "id": "liver",
+    "title": "肝脏",
+    "latin": "Hepar",
+    "en": "HUMAN LIVER",
+    "system": "消化系统",
+    "intro": "转动观察肝脏表面轮廓；此模型不含肝内血管、胆管或分段标注。"
+  },
+  {
+    "id": "stomach",
+    "title": "胃",
+    "latin": "Gaster",
+    "en": "HUMAN STOMACH",
+    "system": "消化系统",
+    "intro": "观察胃的外形、弯曲及两端轮廓；此模型为外表面，不含胃壁分层。"
+  },
+  {
+    "id": "shoulder",
+    "title": "肩部骨性结构",
+    "latin": "Ossa cinguli pectoralis",
+    "en": "SHOULDER BONES",
+    "system": "运动系统",
+    "intro": "分别选取右锁骨、肩胛骨与肱骨，理解肩部骨性关系；不含关节囊、软骨与肩袖。"
+  },
+  {
+    "id": "foot",
+    "title": "足底长韧带与邻近骨",
+    "latin": "Ligamentum plantare longum",
+    "en": "PLANTAR LIGAMENT",
+    "system": "运动系统",
+    "intro": "以双色区分右足底长韧带和跟骨、骰骨、第二至五跖骨；仅展示所选局部结构。"
+  }
+]

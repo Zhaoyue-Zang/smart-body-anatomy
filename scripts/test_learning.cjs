@@ -1,0 +1,12 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const store=new Map();let failWrites=false;
+function boot(){const element={textContent:'',classList:{add(){},remove(){}},value:''};const context=vm.createContext({console:{warn(){}},Event:class{},setInterval(){},setTimeout(){},clearTimeout(){},Date,Map,Set,JSON,document:{readyState:'loading',visibilityState:'visible',addEventListener(){},querySelector(){return element},querySelectorAll(){return []}},window:{addEventListener(){},dispatchEvent(){}},localStorage:{getItem:k=>store.get(k)||null,setItem(k,v){if(failWrites)throw Error('QuotaExceeded');store.set(k,v)}}});for(const p of ['assets/regional-data.js','app.js','learning-tools.js'])vm.runInContext(fs.readFileSync(p,'utf8'),context);return context}
+(async()=>{let c=boot();const run=s=>vm.runInContext(s,c);assert.equal(run('regional.knowledge.length'),101);assert.equal(run('builtInBank.filter(q=>q.source).length'),32);assert.equal(run('topics.filter(t=>t.source).length'),101);
+const fixture='### 题目: 保存验证示例\nA. 正确项\nB. 二\nC. 三\nD. 四\n答案: A\n解析: 测试\n';c.fixture=fixture;
+await run("importQuizFile({name:'fixture.txt',size:500,text:async()=>fixture})");assert.equal(run('state.imported.length'),1);assert.equal(run('state.imports.length'),1);
+await run("importQuizFile({name:'fixture.txt',size:500,text:async()=>fixture})");assert.equal(run('state.imported.length'),1);assert.equal(run('state.imports[0].duplicates'),1);
+run("state.mastered.push('regional-0');state.wrong.push('regional-q-1');state.favorites.push('regional-q-2');save()");c=boot();assert.equal(run('state.imported.length'),1);assert.equal(run("state.mastered.includes('regional-0')"),true);assert.equal(run('state.imports.length'),2);
+assert.equal(run("validateBackup(JSON.parse(JSON.stringify({version:1,data:state}))).imported.length"),1);
+assert.throws(()=>run("validateBackup({version:1,data:{...state,imported:[{q:'bad'}]}})"));
+const before=store.get('zhichu-anatomy-platform-v1');failWrites=true;c.fixture=fixture.replace('保存验证示例','第二个示例');await run("importQuizFile({name:'second.txt',size:500,text:async()=>fixture})");assert.equal(run('state.imported.length'),1);assert.equal(store.get('zhichu-anatomy-platform-v1'),before);assert.equal(run('storageHealthy'),false);
+console.log('PASS: full source counts, import persistence, deduplication, reload, mastery/wrong/favorites, backup validation, quota rollback');})().catch(e=>{console.error(e);process.exitCode=1});

@@ -50,3 +50,15 @@ BodyParts3D, © The Database Center for Life Science (DBCLS), licensed under [Cr
 - 衍生文件：kidneys、brain、spleen、muscles、knee 的 .glb、-poster.png 与 blender/*-studio.blend，均继续按 CC BY-SA 2.1 Japan 分发。模型截图同样保留署名与许可。
 - 双肾：左右肾外表面，不包含内部肾盂、肾锥体或肾血管。脑：37 个皮质、小脑、脑干部件，非完整深部解剖模型。肌肉：右肱二头肌长、短头。膝部：四件骨性结构，不包含关节软骨、韧带或半月板。脾脏：外表面。
 - scripts/prepare_expansion.py 可复现加工，原始 STL 可用下载器重新取得；网页资产无需联网依赖外部模型服务器。
+
+## 器官与关节结构扩充（2026-11-02）
+
+下列五组同样来自 [BodyParts3D / DBCLS 的公开镜像](https://github.com/Kevin-Mattheus-Moerman/BodyParts3D)，原始部件按 FMA ID 在 expansion-sources.json 中逐件记录，下载校验见 expansion-downloads.json。来源与衍生 GLB、PNG 封面、Blender 场景均采用 [CC BY-SA 2.1 Japan](https://creativecommons.org/licenses/by-sa/2.1/jp/)。
+
+- **lungs**：右肺上、中、下叶及左肺上、下叶，共五个网格。保留源空间关系，给予相近但可区分的色调；不包含支气管树、血管和肺段标注。
+- **liver**：肝脏外表面，一个网格；不含肝内血管、胆管或分段标注。
+- **stomach**：胃外表面，一个网格；不显示胃壁层次或内部黏膜。
+- **shoulder**：右锁骨、肩胛骨和完整肱骨三个网格，保留源配准；仅为肩部骨性关系，不含关节囊、软骨、肩袖或韧带。
+- **foot**：右跟骨、骰骨、第二至五跖骨和足底长韧带，共七个网格。青绿色标识韧带、骨色标识骨骼；只包含这些局部结构，并非完整足部模型。封面使用足底斜视角方便观察韧带。
+
+加工采用 scripts/prepare_expansion.py：Blender 导入原始 STL，保留相对位置，必要时减面至每部件约 12,000 面，平滑法线、赋色、统一整体尺寸，导出网格 GLB，布光后渲染。颜色和材质用于结构辨识，不代表真实组织色泽。无额外程序化解剖结构。

@@ -195,6 +195,84 @@
         "id": "FMA24486",
         "name": "right patella"
       }
+    ],
+    "lungs": [
+      {
+        "id": "FMA7333",
+        "name": "upper lobe of right lung"
+      },
+      {
+        "id": "FMA7383",
+        "name": "middle lobe of lung"
+      },
+      {
+        "id": "FMA7337",
+        "name": "lower lobe of right lung"
+      },
+      {
+        "id": "FMA7370",
+        "name": "upper lobe of left lung"
+      },
+      {
+        "id": "FMA7371",
+        "name": "lower lobe of left lung"
+      }
+    ],
+    "liver": [
+      {
+        "id": "FMA7197",
+        "name": "liver"
+      }
+    ],
+    "stomach": [
+      {
+        "id": "FMA7148",
+        "name": "stomach"
+      }
+    ],
+    "shoulder": [
+      {
+        "id": "FMA13322",
+        "name": "right clavicle"
+      },
+      {
+        "id": "FMA13395",
+        "name": "right scapula"
+      },
+      {
+        "id": "FMA23130",
+        "name": "right humerus"
+      }
+    ],
+    "foot": [
+      {
+        "id": "FMA24497",
+        "name": "right calcaneus"
+      },
+      {
+        "id": "FMA24528",
+        "name": "right cuboid bone"
+      },
+      {
+        "id": "FMA24509",
+        "name": "right second metatarsal bone"
+      },
+      {
+        "id": "FMA24511",
+        "name": "right third metatarsal bone"
+      },
+      {
+        "id": "FMA24513",
+        "name": "right fourth metatarsal bone"
+      },
+      {
+        "id": "FMA24515",
+        "name": "right fifth metatarsal bone"
+      },
+      {
+        "id": "FMA44249",
+        "name": "right long plantar ligament"
+      }
     ]
   }
 }

@@ -5,7 +5,7 @@ from urllib.parse import unquote, urlsplit
 import argparse, threading, webbrowser
 
 ROOT=Path(__file__).resolve().parents[1]
-PUBLIC={'index.html','app.js','experience.css','experience.js','studio.html','studio.css','studio.js','智触人体-单文件离线版.html'}
+PUBLIC={'index.html','app.js','experience.css','experience.js','learning-tools.js','studio.html','studio.css','studio.js','智触人体-单文件离线版.html'}
 class Handler(SimpleHTTPRequestHandler):
     extensions_map={**SimpleHTTPRequestHandler.extensions_map,'.js':'text/javascript','.mjs':'text/javascript','.glb':'model/gltf-binary','.wasm':'application/wasm'}
     def __init__(self,*a,**kw):super().__init__(*a,directory=str(ROOT),**kw)
