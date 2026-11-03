@@ -2,7 +2,7 @@
 from pathlib import Path
 import re,base64,mimetypes
 root=Path(__file__).resolve().parents[1]
-h=(root/'index.html').read_text(encoding='utf8')
+h=re.sub(r'\?v=[0-9]+(?=")','',(root/'index.html').read_text(encoding='utf8'))
 for name in ['experience.css']:
     h=h.replace(f'<link rel="stylesheet" href="{name}">','<style>'+ (root/name).read_text(encoding='utf8')+'</style>')
 for name in ['assets/vendor/gsap.min.js','assets/regional-data.js','app.js','learning-tools.js','experience.js']:

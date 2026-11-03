@@ -48,8 +48,8 @@ function initLearningTools(){
  $('#persistentStorage').onclick=async()=>{try{const ok=await navigator.storage?.persist?.();toast(ok?'浏览器已允许持久保留本机数据。':'浏览器暂未授予持久保留；普通自动保存仍然有效，请定期导出备份。')}catch{toast('此浏览器不支持持久保留申请，请定期导出备份。')}};
  document.addEventListener('input',e=>{if(e.target.id==='clozeAnswer')persistQuiz()});
  window.addEventListener('learning-saved',refreshLearningTools);window.addEventListener('bank-imported',refreshLearningTools);
- // Re-read saved state when returning to an idle tab; do not replace an in-progress quiz.
- window.addEventListener('storage',e=>{if(e.key===STORAGE&&!quizSession&&e.newValue){try{state=validateBackup({version:1,data:JSON.parse(e.newValue)});refreshLearningTools();if(page==='dashboard')renderDashboard();if(page==='learn')renderLearn()}catch{}}});
+ // Keep imported banks and records current even while another tab's quiz is open.
+ window.addEventListener('storage',e=>{if(e.key===STORAGE&&e.newValue){try{const incoming=validateBackup({version:1,data:JSON.parse(e.newValue)});if(quizSession){incoming.draft=state.draft;const known=new Set(incoming.imported.map(q=>q.id));incoming.imported.push(...state.imported.filter(q=>quizSession.questions.some(active=>active.id===q.id)&&!known.has(q.id)))}state=incoming;refreshLearningTools();if(page==='dashboard')renderDashboard();if(page==='learn')renderLearn()}catch{}}});
  refreshLearningTools();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLearningTools);else initLearningTools();
